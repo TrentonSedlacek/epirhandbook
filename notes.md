@@ -1,6 +1,7 @@
 # notes.md
 
-**Script:** `epi_ch1_3.R` — 429 lines, 73 executable, 254 commented.
+**Script:** `epi_ch1_3.R` — 433 lines, 73 executable, 258 commented. Byte-exact to the book
+(see "Byte-level verification" at the end).
 **Source:** `appliedepi/epirhandbook`, branch `main`, HEAD `1d94ba0a84b062ba72cb1205a1fb99bbc600caee`
 (`chapters/editorial_style.qmd`, `chapters/data_used.qmd`, `chapters/basics.qmd`).
 
