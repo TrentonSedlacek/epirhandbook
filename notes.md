@@ -108,6 +108,38 @@ No script defect — purely this machine's blocked network (below).
 
 ---
 
+## Checked afterwards: the script's section order MATCHES the live site
+
+A claim went round that the script's Chapter 3 sections are ordered differently from
+epirhandbook.com because `main` reorganised the chapter. **That is not correct — do not tell
+the group this.** `## Functions` precedes `## Packages` on both branches:
+
+```
+MAIN   chapters/basics.qmd :  290: ## Functions {#functions}   470: ## Packages {#packages}
+MASTER new_pages/basics.qmd:  285: ## Functions {#functions}   465: ## Packages {#packages}
+```
+
+That matches the live site's own table of contents (3.6 Functions, then 3.7 Packages). So
+`sqrt(49)` at script line 125 coming before `pacman::p_load(...)` at line 169 is exactly the
+website's order. Nothing drifted. No reorganisation happened.
+
+## Live site vs `main` for Chapter 3: 9 lines differ, one is code
+
+```
++ aliases:  - /new_pages/basics.html          (front-matter, main only)
+- transition_to_R.qmd  ->  transition_to_r.qmd  (a link)
+- linelist <- rio::import(here::here("data", "case_linelists", "linelist_cleaned.rds"))
++ linelist <- appliedepidata::get_data(name = "linelist_cleaned_rds")
+```
+
+Both versions have the same 74 chunks in the same order.
+
+**This improves the fidelity argument for deviation 1.** The live site's own hidden setup chunk
+already uses `rio::import()` on `linelist_cleaned.rds`. Measured against the text the group is
+actually reading, deviation 1 is not "swap out a package" at all — it is the same function,
+from the same package the chapter teaches, on the same file, with a URL instead of a local
+path. It is `main` that departs from the live site here, not the script.
+
 ## Untested — flag these
 
 This environment blocks CRAN (`cloud.r-project.org`, HTTP 403 at the egress proxy), so three
