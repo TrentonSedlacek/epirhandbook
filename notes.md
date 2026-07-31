@@ -140,7 +140,49 @@ actually reading, deviation 1 is not "swap out a package" at all — it is the s
 from the same package the chapter teaches, on the same file, with a URL instead of a local
 path. It is `main` that departs from the live site here, not the script.
 
-## Untested — flag these
+## CONFIRMED ON WINDOWS (2026-07-31) — the untested items below are now settled
+
+The script was run end to end on the target machine: **R 4.6.0, Windows 11 x64 (build 26100),
+RStudio 2026.05.0+218.** It completed with no errors. All three previously-untested items are
+confirmed working with the real packages:
+
+| Was untested | Result on Windows |
+|---|---|
+| `apyramid::age_pyramid()` | **Works** — real `apyramid` 0.1.3, all three calls drew. Each emits `278 missing rows were removed (86 values from age_cat5 and 278 values from gender)` — expected, the linelist has missing gender/age. |
+| `janitor::round_half_up()` | **Works** — real `janitor` 2.2.1 returns `3 4`, matching the book and my stub. |
+| `pacman::p_load()` | **Works** — real `pacman` 0.5.1 resolved `rio, tidyverse, here, janitor`. |
+
+Both FIX lines behaved:
+
+* Line 118 (URL load) succeeded. It emits one warning,
+  `Missing 'trust' will be set to FALSE by default for RDS in 2.0.0.` This is a **rio
+  deprecation notice, not a problem** — Applied Epi document it themselves in `STAKEHOLDERS.md`
+  as a known 2.7 change that appears on every page importing data.
+* Line 169 (`janitor` added) succeeded.
+
+**Every printed value matches the book**: `sqrt(49)`=7; `summary(linelist$age)` =
+`0.00 6.00 13.00 16.07 23.00 84.00` with 86 NA; `table(gender, outcome)` = f 1227/953,
+m 1228/950; `count(age_cat)` = 1095, 1095, 941, 743, 1073, 754, 95, 6, 86;
+`round(c(2.5,3.5))`=`2 4` vs `round_half_up`=`3 4`;
+`affirmative_str_search` = `1|Yes|YES|yes|y|Y|oui|Oui|Si`.
+
+The `count(age_cat)` result also confirms the URL `.rds` preserves the factor levels in book
+order, so the file behind deviation 1 is the right one.
+
+### One piece of housekeeping
+
+`session_info()` lists `appliedepidata 0.0.0.9008` flagged `R ── Package was removed from disk`.
+That is wreckage from the failed install: the library still has a registration for a package
+whose files are gone. Harmless to this script, but worth clearing so it stops appearing and
+cannot half-load later:
+
+```r
+remove.packages("appliedepidata")
+```
+
+If that errors because the directory is already gone, it can be ignored.
+
+## Previously untested (superseded by the Windows run above)
 
 This environment blocks CRAN (`cloud.r-project.org`, HTTP 403 at the egress proxy), so three
 things could not be exercised with the real packages:
