@@ -215,3 +215,32 @@ things could not be exercised with the real packages:
 - **The source-compile prompt.** If R asks *"Do you want to install from sources the package
   which needs compilation?"*, they should answer **No**. With no Rtools, that prompt is the
   most likely thing to break a beginner's install of `apyramid` or `janitor`.
+
+---
+
+## Byte-level verification (2026-07-31)
+
+Every code line in `epi_ch1_3.R` was machine-compared against the chunk bodies of
+`chapters/editorial_style.qmd`, `chapters/data_used.qmd` and `chapters/basics.qmd` at
+`1d94ba0`.
+
+**Result: 0 lines differ from the book in content.**
+
+The first build was verbatim in content but not in bytes: the generator called `.rstrip()`,
+which silently removed **24 trailing-space characters across 18 book lines**, and trimmed
+**4 blank lines** at chunk edges. That has been corrected. The script is now byte-for-byte
+identical to the book, trailing whitespace included (51 lines now end in a space, as the book
+does).
+
+The complete and exhaustive difference between `epi_ch1_3.R` and the book is:
+
+| # | Difference | Count |
+|---|---|---|
+| 1 | `linelist <- appliedepidata::get_data(name = "linelist_cleaned_rds")` replaced with the `rio::import()` URL | 1 line |
+| 2 | `pacman::p_load(rio, tidyverse, here)` gains `, janitor` | 1 line |
+| 3 | `# Chapter 1` / `# Chapter 2` / `# Chapter 3` markers | 3 lines added |
+| 4 | `eval=F` chunk lines prefixed with `# ` (rule 4) | mechanical |
+| 5 | one blank line inserted between chunks | structural |
+| 6 | 10 `knitr::include_graphics()` chunks omitted | book-rendering only |
+
+Nothing else. Re-verified running after the rebuild: 0 failures, `linelist` 5888 x 31.
