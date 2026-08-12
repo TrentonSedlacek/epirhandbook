@@ -282,11 +282,24 @@ manual_entry_cols <- data.frame(PatientID, Treatment, Death)
 #   sep = "t",           # separator could be tab, or commas, etc.
 #   header=TRUE)         # if there is a header row
 
-# FIX: commented out - uses LOCAL files/folders that cannot be read from a URL;
-# to run, first download the handbook data locally (see Chapter 2:
-# get_data("all") from the epirhandbook package), then uncomment and adjust paths.
-# linelist_filenames <- dir(here("data", "example", "linelists")) # get file names from folder
-# linelist_filenames                                              # print
+# FIX: standalone setup - download the example linelist files to a temp folder,
+# so the "import most recent file" demos below can run
+linelists_dir <- file.path(tempdir(), "linelists")
+dir.create(linelists_dir, showWarnings = FALSE)
+for (f in c("20201007linelist.csv",
+            "case_linelist20201006.csv",
+            "case_linelist_2020-10-02.csv",
+            "case_linelist_2020-10-03.csv",
+            "case_linelist_2020-10-04.csv",
+            "case_linelist_2020-10-05.csv",
+            "case_linelist_2020-10-08.xlsx")) {
+  download.file(
+    paste0("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/linelists/", f),
+    file.path(linelists_dir, f), mode = "wb")
+}
+
+linelist_filenames <- dir(linelists_dir) # get file names from folder  # FIX: local folder -> temp folder downloaded above
+linelist_filenames                                              # print
 
 linelist_dates_raw <- stringr::str_extract(linelist_filenames, "[0-9].*[0-9]") # extract numbers and any characters in between
 linelist_dates_raw  # print
@@ -297,26 +310,23 @@ linelist_dates_clean
 index_latest_file <- which.max(linelist_dates_clean)
 index_latest_file
 
-# FIX: commented out - uses LOCAL files/folders that cannot be read from a URL;
-# to run, first download the handbook data locally (see Chapter 2:
-# get_data("all") from the epirhandbook package), then uncomment and adjust paths.
-# # load packages
-# pacman::p_load(
-#   tidyverse,         # data management
-#   stringr,           # work with strings/characters
-#   lubridate,         # work with dates
-#   rio,               # import / export
-#   here,              # relative file paths
-#   fs)                # directory interactions
-#
-# # extract the file name of latest file
-# latest_file <- dir(here("data", "example", "linelists")) %>%  # file names from "linelists" sub-folder          
-#   str_extract("[0-9].*[0-9]") %>%                  # pull out dates (numbers)
-#   ymd() %>%                                        # convert numbers to dates (assuming year-month-day format)
-#   which.max() %>%                                  # get index of max date (latest file)
-#   dir(here("data", "example", "linelists"))[[.]]              # return the filename of latest linelist
-#
-# latest_file  # print name of latest file
+# load packages
+pacman::p_load(
+  tidyverse,         # data management
+  stringr,           # work with strings/characters
+  lubridate,         # work with dates
+  rio,               # import / export
+  here,              # relative file paths
+  fs)                # directory interactions
+
+# extract the file name of latest file
+latest_file <- dir(linelists_dir) %>%  # file names from "linelists" sub-folder  # FIX: local folder -> temp folder downloaded above
+  str_extract("[0-9].*[0-9]") %>%                  # pull out dates (numbers)
+  ymd() %>%                                        # convert numbers to dates (assuming year-month-day format)
+  which.max() %>%                                  # get index of max date (latest file)
+  dir(linelists_dir)[[.]]              # return the filename of latest linelist  # FIX: local folder -> temp folder downloaded above
+
+latest_file  # print name of latest file
 
 # here("data", "example", "linelists", latest_file) 
 
