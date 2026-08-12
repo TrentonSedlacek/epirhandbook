@@ -427,8 +427,7 @@ linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbo
 
 # Chapter 5 - Suggested packages
 
-# FIX: uncommented (shown but not run in the book) so you can install all
-# handbook packages - run this once first; p_load() only installs what is missing
+# FIX: uncommented (book shows but does not run this) - installs all handbook packages
 
 ##########################################
 # List of useful epidemiology R packages #
@@ -700,8 +699,7 @@ manual_entry_cols <- data.frame(PatientID, Treatment, Death)
 #   sep = "t",           # separator could be tab, or commas, etc.
 #   header=TRUE)         # if there is a header row
 
-# FIX: standalone setup - download the example linelist files to a temp folder,
-# so the "import most recent file" demos below can run
+# FIX: added (not in book) - download the example files so the demos below run
 linelists_dir <- file.path(tempdir(), "linelists")
 dir.create(linelists_dir, showWarnings = FALSE)
 for (f in c("20201007linelist.csv",
@@ -716,7 +714,7 @@ for (f in c("20201007linelist.csv",
     file.path(linelists_dir, f), mode = "wb")
 }
 
-linelist_filenames <- dir(linelists_dir) # get file names from folder  # FIX: local folder -> temp folder downloaded above
+linelist_filenames <- dir(linelists_dir) # get file names from folder  # FIX: local folder -> temp folder
 linelist_filenames                                              # print
 
 linelist_dates_raw <- stringr::str_extract(linelist_filenames, "[0-9].*[0-9]") # extract numbers and any characters in between
@@ -738,11 +736,11 @@ pacman::p_load(
   fs)                # directory interactions
 
 # extract the file name of latest file
-latest_file <- dir(linelists_dir) %>%  # file names from "linelists" sub-folder  # FIX: local folder -> temp folder downloaded above
+latest_file <- dir(linelists_dir) %>%  # file names from "linelists" sub-folder  # FIX: local folder -> temp folder
   str_extract("[0-9].*[0-9]") %>%                  # pull out dates (numbers)
   ymd() %>%                                        # convert numbers to dates (assuming year-month-day format)
   which.max() %>%                                  # get index of max date (latest file)
-  dir(linelists_dir)[[.]]              # return the filename of latest linelist  # FIX: local folder -> temp folder downloaded above
+  dir(linelists_dir)[[.]]              # return the filename of latest linelist  # FIX: local folder -> temp folder
 
 latest_file  # print name of latest file
 
@@ -4638,8 +4636,7 @@ age_cat5 <- c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29",  "30-34", "35-39
 A_deaths <- data.frame(Country = "A", AgeCat = age_cat5, Male = A_males, Female = A_females)
 B_deaths <- data.frame(Country = "B", AgeCat = age_cat5, Male = B_males, Female = B_females)
 
-# FIX: commented out - writes or inspects LOCAL files; adjust the paths to use
-# this on your own machine.
+# FIX: commented out - writes/inspects LOCAL files
 # rio::export(A_deaths, here::here("data", "standardization", "deaths_countryA.csv"))
 # rio::export(B_deaths, here::here("data", "standardization", "deaths_countryB.csv"))
 
@@ -4910,8 +4907,7 @@ counts <- counts %>%
 #   }
 #
 
-# FIX: standalone setup - download the ten weather .nc files to a temp folder,
-# because stars::read_stars() cannot read from URLs
+# FIX: added (not in book) - download the weather .nc files (stars cannot read URLs)
 weather_dir <- file.path(tempdir(), "weather")
 dir.create(weather_dir, showWarnings = FALSE)
 for (yr in 2002:2011) {
@@ -7683,9 +7679,7 @@ linelist_sf <- linelist %>%
 
 DT::datatable(head(linelist_sf, 10), rownames = FALSE, options = list(pageLength = 5, scrollX=T), class = 'white-space: nowrap' )
 
-# FIX: commented out - uses LOCAL files/folders that cannot be read from a URL;
-# to run, first download the handbook data locally (see Chapter 2:
-# get_data("all") from the epirhandbook package), then uncomment and adjust paths.
+# FIX: commented out - needs LOCAL files (download handbook data first, see Ch 2 get_data("all"))
 # sle_adm3_raw <- sf::read_sf(here("data", "gis", "shp", "sle_adm3.shp"))
 
 # ADM3 level clean
@@ -7697,9 +7691,7 @@ sle_adm3 <- sle_adm3_raw %>%
 sle_adm3_pop <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/gis/population/sle_admpop_adm3_2020.csv") %>%  # FIX: local file -> URL
   janitor::clean_names()
 
-# FIX: commented out - uses LOCAL files/folders that cannot be read from a URL;
-# to run, first download the handbook data locally (see Chapter 2:
-# get_data("all") from the epirhandbook package), then uncomment and adjust paths.
+# FIX: commented out - needs LOCAL files (download handbook data first, see Ch 2 get_data("all"))
 # # OSM health facility shapefile
 # sle_hf <- sf::read_sf(here("data", "gis", "shp", "sle_hf.shp")) %>% 
 #   janitor::clean_names() %>%
@@ -13911,20 +13903,14 @@ pacman::p_load(
   here,           # relative file pathways
   tidyverse)      # data management and visualization
 
-# FIX: commented out - uses LOCAL files/folders that cannot be read from a URL;
-# to run, first download the handbook data locally (see Chapter 2:
-# get_data("all") from the epirhandbook package), then uncomment and adjust paths.
+# FIX: commented out - needs LOCAL files (download handbook data first, see Ch 2 get_data("all"))
 # fs::dir_tree(path = here("data"), recurse = TRUE)
 
-# FIX: commented out - uses LOCAL files/folders that cannot be read from a URL;
-# to run, first download the handbook data locally (see Chapter 2:
-# get_data("all") from the epirhandbook package), then uncomment and adjust paths.
+# FIX: commented out - needs LOCAL files (download handbook data first, see Ch 2 get_data("all"))
 # # file names
 # dir(here("data", "gis", "population"))
 
-# FIX: commented out - uses LOCAL files/folders that cannot be read from a URL;
-# to run, first download the handbook data locally (see Chapter 2:
-# get_data("all") from the epirhandbook package), then uncomment and adjust paths.
+# FIX: commented out - needs LOCAL files (download handbook data first, see Ch 2 get_data("all"))
 # # file paths
 # dir_ls(here("data", "gis", "population"))
 
@@ -13933,8 +13919,7 @@ pacman::p_load(
 
 # file_info(here("data", "case_linelists", "linelist_cleaned.rds"))
 
-# FIX: commented out - writes or inspects LOCAL files; adjust the paths to use
-# this on your own machine.
+# FIX: commented out - writes/inspects LOCAL files
 # file_info(here("data", "case_linelists", "linelist_cleaned.rds"))$modification_time
 
 exists("linelist")
@@ -13942,12 +13927,10 @@ exists("linelist")
 exists("data")
 exists("data", inherit = FALSE)
 
-# FIX: commented out - writes or inspects LOCAL files; adjust the paths to use
-# this on your own machine.
+# FIX: commented out - writes/inspects LOCAL files
 # is_dir(here("data"))
 
-# FIX: commented out - writes or inspects LOCAL files; adjust the paths to use
-# this on your own machine.
+# FIX: commented out - writes/inspects LOCAL files
 # is_file(here("data", "case_linelists", "linelist_cleaned.rds"))
 
 # dir_create(here("data", "test"))

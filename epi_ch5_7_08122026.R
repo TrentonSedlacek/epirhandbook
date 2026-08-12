@@ -1,16 +1,6 @@
-################################################################################
-# The Epidemiologist R Handbook - Chapters 5-7, standalone
-# 5 Suggested packages | 6 R projects | 7 Import and export
-#
-# - Run the Chapter 5 p_load() block first to install/load packages.
-# - Active code runs as-is (internet needed for FIX-marked URL imports).
-# - Commented code is shown in the book but needs your own files/paths.
-################################################################################
-
 # Chapter 5 - Suggested packages
 
-# FIX: uncommented (shown but not run in the book) so you can install all
-# handbook packages - run this once first; p_load() only installs what is missing
+# FIX: uncommented (book shows but does not run this) - installs all handbook packages
 
 ##########################################
 # List of useful epidemiology R packages #
@@ -282,8 +272,7 @@ manual_entry_cols <- data.frame(PatientID, Treatment, Death)
 #   sep = "t",           # separator could be tab, or commas, etc.
 #   header=TRUE)         # if there is a header row
 
-# FIX: standalone setup - download the example linelist files to a temp folder,
-# so the "import most recent file" demos below can run
+# FIX: added (not in book) - download the example files so the demos below run
 linelists_dir <- file.path(tempdir(), "linelists")
 dir.create(linelists_dir, showWarnings = FALSE)
 for (f in c("20201007linelist.csv",
@@ -298,7 +287,7 @@ for (f in c("20201007linelist.csv",
     file.path(linelists_dir, f), mode = "wb")
 }
 
-linelist_filenames <- dir(linelists_dir) # get file names from folder  # FIX: local folder -> temp folder downloaded above
+linelist_filenames <- dir(linelists_dir) # get file names from folder  # FIX: local folder -> temp folder
 linelist_filenames                                              # print
 
 linelist_dates_raw <- stringr::str_extract(linelist_filenames, "[0-9].*[0-9]") # extract numbers and any characters in between
@@ -320,11 +309,11 @@ pacman::p_load(
   fs)                # directory interactions
 
 # extract the file name of latest file
-latest_file <- dir(linelists_dir) %>%  # file names from "linelists" sub-folder  # FIX: local folder -> temp folder downloaded above
+latest_file <- dir(linelists_dir) %>%  # file names from "linelists" sub-folder  # FIX: local folder -> temp folder
   str_extract("[0-9].*[0-9]") %>%                  # pull out dates (numbers)
   ymd() %>%                                        # convert numbers to dates (assuming year-month-day format)
   which.max() %>%                                  # get index of max date (latest file)
-  dir(linelists_dir)[[.]]              # return the filename of latest linelist  # FIX: local folder -> temp folder downloaded above
+  dir(linelists_dir)[[.]]              # return the filename of latest linelist  # FIX: local folder -> temp folder
 
 latest_file  # print name of latest file
 
