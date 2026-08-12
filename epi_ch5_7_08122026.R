@@ -1,6 +1,5 @@
 # Chapter 5
 
-# FIX: uncommented so the packages install (book only displays this)
 
 ##########################################
 # List of useful epidemiology R packages #

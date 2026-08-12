@@ -427,7 +427,6 @@ linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbo
 
 # Chapter 5 - Suggested packages
 
-# FIX: uncommented so the packages install (book only displays this)
 
 ##########################################
 # List of useful epidemiology R packages #
