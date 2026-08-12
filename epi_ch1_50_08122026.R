@@ -698,7 +698,7 @@ manual_entry_cols <- data.frame(PatientID, Treatment, Death)
 #   sep = "t",           # separator could be tab, or commas, etc.
 #   header=TRUE)         # if there is a header row
 
-# FIX: not in book, downloads the example files used below
+# FIX: not in the book. It assumes you already have these files, so grab them off github first
 linelists_dir <- file.path(tempdir(), "linelists")
 dir.create(linelists_dir, showWarnings = FALSE)
 for (f in c("20201007linelist.csv",
@@ -713,7 +713,7 @@ for (f in c("20201007linelist.csv",
     file.path(linelists_dir, f), mode = "wb")
 }
 
-# FIX: here("data", "example", "linelists") -> linelists_dir
+# FIX: swapped the book's folder path for the temp folder above
 linelist_filenames <- dir(linelists_dir) # get file names from folder
 linelist_filenames                                              # print
 
@@ -736,7 +736,7 @@ pacman::p_load(
   fs)                # directory interactions
 
 # extract the file name of latest file
-# FIX: here("data", "example", "linelists") -> linelists_dir
+# FIX: same folder swap as above
 latest_file <- dir(linelists_dir) %>%  # file names from "linelists" sub-folder          
   str_extract("[0-9].*[0-9]") %>%                  # pull out dates (numbers)
   ymd() %>%                                        # convert numbers to dates (assuming year-month-day format)
