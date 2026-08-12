@@ -401,3 +401,14 @@ latest_file  # print name of latest file
 # rio::export(my_list, my_dataframe, my_vector, "my_objects.Rdata")
 
 # rio::import_list("my_list.Rdata")
+
+
+# Chapter 7 practice: my flu demo data, pulled straight off github this time
+# Made-up data for this demo, don't reuse it thinking it's real.
+flu <- import("https://raw.githubusercontent.com/TrentonSedlacek/epirhandbook/claude/epidemiologist-r-handbook-44nonv/data/flu_demo_data.xlsx")
+
+head(flu, 10)
+
+summary(flu$pct_vaccinated)
+
+table(flu$region)
