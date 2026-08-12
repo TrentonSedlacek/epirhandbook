@@ -100,7 +100,7 @@ sessioninfo::session_info()
 # Chapter 3
 
 # import the cleaned ebola linelist
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 pacman::p_load(apyramid)
 
 # install.packages('tinytex')
@@ -421,7 +421,7 @@ affirmative_str_search
 # Chapter 4 - Transition to R
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 
 
@@ -613,7 +613,7 @@ pacman::p_load(
 # HIDDEN FROM READER
 ####################
 # Create second header row of "data dictionary" and insert into row 2. Save as new dataframe.
-linelist_2headers <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds") %>%  # FIX: local file -> URL
+linelist_2headers <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds") %>%  # FIX: swapped their local file for the github copy
         mutate(across(everything(), as.character)) %>% 
         add_row(.before = 1,
                 #row_num = "000",
@@ -845,7 +845,7 @@ pacman::p_load(
 
 # HIDDEN FROM READER
 # actually load the data using here()
-linelist_raw <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_raw.xlsx")  # FIX: local file -> URL
+linelist_raw <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_raw.xlsx")  # FIX: swapped their local file for the github copy
 
 # linelist_raw <- import("linelist_raw.xlsx")
 
@@ -1155,7 +1155,7 @@ linelist <- linelist %>%
 # linelist <- linelist %>% 
 #   mutate(date_onset = replace(date_onset, date_onset > as.Date("2000-01-01"), NA))
 
-cleaning_dict <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/cleaning_dict.csv")  # FIX: local file -> URL
+cleaning_dict <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/cleaning_dict.csv")  # FIX: swapped their local file for the github copy
 
 # cleaning_dict <- import("cleaning_dict.csv")
 
@@ -1602,7 +1602,7 @@ pacman::p_load(
   rio,        # data import/export
   tidyverse)  # data management and visualization  
 
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 
 # linelist <- import("linelist_cleaned.xlsx")
@@ -1808,7 +1808,7 @@ time_london_local <- force_tz(time_now, "Europe/London")
 time_london_real - time_london_local
 
 
-counts <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/district_weekly_count_data.xlsx") %>%  # FIX: local file -> URL
+counts <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/district_weekly_count_data.xlsx") %>%  # FIX: swapped their local file for the github copy
   filter(District == "Nibari") %>% 
   mutate(Date = as.Date(Date),
          week_start = lubridate::floor_date(Date, "week")) %>%
@@ -1835,7 +1835,7 @@ pacman::p_load(
 
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import case linelist 
 # linelist <- import("linelist_cleaned.rds")
@@ -2170,7 +2170,7 @@ pacman::p_load(
   )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import your dataset
 # linelist <- import("linelist_cleaned.rds")
@@ -2358,14 +2358,14 @@ pacman::p_load(
   kableExtra,   # Build and manipulate complex tables
   tidyverse)    # data management + ggplot2 graphics
 
-count_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds") %>%  # FIX: local file -> URL
+count_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds") %>%  # FIX: swapped their local file for the github copy
   as_tibble()
 
 # # Import data
 # count_data <- import("malaria_facility_count_data.rds")
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import your dataset
 # linelist <- import("linelist_cleaned.xlsx")
@@ -2590,7 +2590,7 @@ pacman::p_load(
   tidyverse, # to clean, handle, and plot the data (includes dplyr)
   janitor)   # adding total rows and columns
 
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # linelist <- import("linelist_cleaned.rds")
 
@@ -2767,7 +2767,7 @@ pacman::p_load(
 )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import case linelist 
 # linelist <- import("linelist_cleaned.rds")
@@ -3180,7 +3180,7 @@ pacman::p_load(
 )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -3333,7 +3333,7 @@ pacman::p_load(
      readxl          # import Excel with multiple sheets
 )
 
-sheet_names <- readxl::excel_sheets("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx")  # FIX: local file -> URL
+sheet_names <- readxl::excel_sheets("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx")  # FIX: swapped their local file for the github copy
 
 
 # sheet_names <- readxl::excel_sheets("hospital_linelists.xlsx")
@@ -3342,17 +3342,17 @@ sheet_names
 
 combined <- sheet_names %>% 
   purrr::set_names() %>% 
-  map(.f = ~import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx", which = .x))  # FIX: local file -> URL
+  map(.f = ~import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx", which = .x))  # FIX: swapped their local file for the github copy
 
 # combined <- sheet_names %>% 
 #   purrr::set_names() %>% 
 #   map(.f = ~import("hospital_linelists.xlsx", which = .x))
 
-sheet_names <- readxl::excel_sheets("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx")  # FIX: local file -> URL
+sheet_names <- readxl::excel_sheets("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx")  # FIX: swapped their local file for the github copy
 
 combined <- sheet_names %>% 
   purrr::set_names() %>% 
-  map(.f = ~import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx", which = .x)) %>%  # FIX: local file -> URL
+  map(.f = ~import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx", which = .x)) %>%  # FIX: swapped their local file for the github copy
   bind_rows(.id = "origin_sheet")
 
 # sheet_names <- readxl::excel_sheets("hospital_linelists.xlsx")  # extract sheet names
@@ -3362,12 +3362,12 @@ combined <- sheet_names %>%
 #   map(.f = ~import("hospital_linelists.xlsx", which = .x)) %>%  # iterate, import, save in list
 #   bind_rows(.id = "origin_sheet") # combine list of data frames, preserving origin in new column  
 
-sheet_names <- readxl::excel_sheets("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx")  # FIX: local file -> URL
+sheet_names <- readxl::excel_sheets("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx")  # FIX: swapped their local file for the github copy
 
 combined <- sheet_names %>% 
      purrr::set_names() %>% 
      # exclude the first sheet
-     map_at(.f = ~import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx", which = .x),  # FIX: local file -> URL
+     map_at(.f = ~import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/example/hospital_linelists.xlsx", which = .x),  # FIX: swapped their local file for the github copy
             .at = c(-1))
 
 # sheet_names <- readxl::excel_sheets("hospital_linelists.xlsx")
@@ -3532,7 +3532,7 @@ pacman::p_load(
   )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -3808,7 +3808,7 @@ table_long %>%
 
 
 
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 border_style = officer::fp_border(color="black", width=1)
 
@@ -3972,7 +3972,7 @@ pacman::p_load(
   )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -4104,7 +4104,7 @@ pacman::p_load(
   )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -4363,7 +4363,7 @@ pacman::p_load(
 )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -4609,7 +4609,7 @@ pacman::p_load(
 #
 
 # Country A
-A_demo <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/standardization/country_demographics.csv") %>%  # FIX: local file -> URL
+A_demo <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/standardization/country_demographics.csv") %>%  # FIX: swapped their local file for the github copy
      mutate(Country = "A") %>% 
      select(Country, everything()) %>% # re-arrange
      mutate(age_cat5 = str_replace_all(age_cat5, "\\+", "")) # remove + symbols
@@ -4618,7 +4618,7 @@ A_demo <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook
 # A_demo <- import("country_demographics.csv")
 
 # Country B
-B_demo <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/standardization/country_demographics_2.csv") %>%  # FIX: local file -> URL
+B_demo <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/standardization/country_demographics_2.csv") %>%  # FIX: swapped their local file for the github copy
      mutate(Country = "B") %>% 
      select(Country, everything()) # re-arrange
 
@@ -4680,7 +4680,7 @@ country_data <- country_data %>%
 
 
 # Reference population
-standard_pop_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/standardization/world_standard_population_by_sex.csv") %>%  # FIX: local file -> URL
+standard_pop_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/standardization/world_standard_population_by_sex.csv") %>%  # FIX: swapped their local file for the github copy
      rename(age_cat5 = AgeGroup)
 
 # # Reference population
@@ -4736,7 +4736,7 @@ pacman::p_load(
 )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.xlsx")
@@ -4843,7 +4843,7 @@ pacman::p_load(rio,          # File import
                )
 
 # import the counts into R
-counts <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/time_series/campylobacter_germany.xlsx")  # FIX: local file -> URL
+counts <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/time_series/campylobacter_germany.xlsx")  # FIX: swapped their local file for the github copy
 
 # # import the counts into R
 # counts <- rio::import("campylobacter_germany.xlsx")
@@ -5821,7 +5821,7 @@ ggplot(estimate_res, aes(x = epiweek)) +
 pacman::p_load(tidyverse, EpiNow2, EpiEstim, here, incidence2, epicontacts, rio, projections)
 
 ## load linelist
-linelist <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 ## generate contacts
 contacts <- linelist %>%
@@ -5853,7 +5853,7 @@ epic <- make_epicontacts(
 ## )
 
 ## import cached generation time
-generation_time <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/cache/epidemic_models/generation_time.rds")  # FIX: local file -> URL
+generation_time <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/cache/epidemic_models/generation_time.rds")  # FIX: swapped their local file for the github copy
 
 ## ## estimate incubation period
 ## incubation_period <- bootstrapped_dist_fit(
@@ -5870,7 +5870,7 @@ generation_time <- import("https://raw.githubusercontent.com/appliedepi/epirhand
 ## )
 
 ## import cached incubation period
-incubation_period <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/cache/epidemic_models/incubation_period.rds")  # FIX: local file -> URL
+incubation_period <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/cache/epidemic_models/incubation_period.rds")  # FIX: swapped their local file for the github copy
 
 ## get incidence from onset date
 cases <- linelist %>%
@@ -5897,7 +5897,7 @@ cases <- linelist %>%
 ## )
 
 ## import cached epinow results
-epinow_res <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/cache/epidemic_models/epinow_res.rds")  # FIX: local file -> URL
+epinow_res <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/cache/epidemic_models/epinow_res.rds")  # FIX: swapped their local file for the github copy
 
 ## plot summary figure
 plot(epinow_res)
@@ -5917,7 +5917,7 @@ pacman::p_load(
 )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the cleaned linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -6431,11 +6431,11 @@ pacman::p_load(
   kableExtra    # table formatting
 )
 
-cases <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/cases_clean.rds") %>%  # FIX: local file -> URL
+cases <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/cases_clean.rds") %>%  # FIX: swapped their local file for the github copy
   select(case_id, firstName, lastName, gender, age, age_class,
          occupation, classification, was_contact, hospitalization_typeid)
 
-contacts <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/contacts_clean.rds") %>%  # FIX: local file -> URL
+contacts <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/contacts_clean.rds") %>%  # FIX: swapped their local file for the github copy
   mutate(age_class = forcats::fct_rev(age_class)) %>% 
   select(contact_id, contact_status, firstName, lastName, gender, age,
          age_class, occupation, date_of_reporting, date_of_data_entry,
@@ -6443,12 +6443,12 @@ contacts <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_en
          date_of_followup_start, date_of_followup_end, risk_level, was_case, admin_2_name) %>% 
   mutate(admin_2_name = replace_na(admin_2_name, "Djembe"))
 
-followups <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/followups_clean.rds") %>%  # FIX: local file -> URL
+followups <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/followups_clean.rds") %>%  # FIX: swapped their local file for the github copy
   select(contact_id, followup_status, followup_number,
          date_of_followup, admin_2_name, admin_1_name) %>% 
   mutate(followup_status = str_to_lower(followup_status))
 
-relationships <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/relationships_clean.rds") %>%  # FIX: local file -> URL
+relationships <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/relationships_clean.rds") %>%  # FIX: swapped their local file for the github copy
   select(source_visualid, source_gender, source_age, date_of_last_contact,
          date_of_data_entry, target_visualid, target_gender,
          target_age, exposure_type)
@@ -6713,13 +6713,13 @@ pacman::p_load_gh(
 
 
 # import the survey into R
-survey_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/surveys/survey_data.xlsx")  # FIX: local file -> URL
+survey_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/surveys/survey_data.xlsx")  # FIX: swapped their local file for the github copy
 
 # import the dictionary into R
-survey_dict <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/surveys/survey_dict.xlsx")  # FIX: local file -> URL
+survey_dict <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/surveys/survey_dict.xlsx")  # FIX: swapped their local file for the github copy
 
 # import the population in to R 
-population <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/surveys/population.xlsx")  # FIX: local file -> URL
+population <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/surveys/population.xlsx")  # FIX: swapped their local file for the github copy
 
 # # import the survey data
 # survey_data <- rio::import("survey_data.xlsx")
@@ -7350,7 +7350,7 @@ pacman::p_load(
 
 
 # import linelist
-linelist_case_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist_case_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import linelist
 # linelist_case_data <- rio::import("linelist_cleaned.rds")
@@ -7660,7 +7660,7 @@ pacman::p_load(
   )
 
 # import clean case linelist
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import clean case linelist
 # linelist <- import("linelist_cleaned.rds")  
@@ -7686,7 +7686,7 @@ sle_adm3 <- sle_adm3_raw %>%
   filter(admin2name %in% c("Western Area Urban", "Western Area Rural")) # filter to keep certain areas
 
 # Population by ADM3
-sle_adm3_pop <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/gis/population/sle_admpop_adm3_2020.csv") %>%  # FIX: local file -> URL
+sle_adm3_pop <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/gis/population/sle_admpop_adm3_2020.csv") %>%  # FIX: swapped their local file for the github copy
   janitor::clean_names()
 
 # FIX: commented out, needs local files (get_data("all") from Ch 2 first)
@@ -8080,7 +8080,7 @@ lee_test
 # Chapter 29 - Tables for presentation
 
 
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 border_style = officer::fp_border(color="black", width=1)
 
@@ -8181,7 +8181,7 @@ pacman::p_load(
 
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -8434,7 +8434,7 @@ pacman::p_load(
   stringr         # working with characters   
 )
 
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 
 # linelist <- rio::import("linelist_cleaned.rds")
@@ -8549,7 +8549,7 @@ ggplot(data = linelist,
 #
 
 # These data are daily counts of malaria cases, by facility-day
-malaria_data <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds") %>%  # import  # FIX: local file -> URL
+malaria_data <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds") %>%  # import  # FIX: swapped their local file for the github copy
   select(-submitted_date, -Province, -newid)                                 # remove unneeded columns
 
 
@@ -8897,7 +8897,7 @@ pacman::p_load(
   RColorBrewer    # color scales
 )
 
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 
 # linelist <- rio::import("linelist_cleaned.rds")
@@ -9048,7 +9048,7 @@ preparedness_plot                  # print original plot
 preparedness_plot+                   # begin with plot saved above
   scale_y_continuous(trans = "log2") # add transformation for y-axis
 
-case_source_relationships <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/relationships_clean.rds") %>%  # FIX: local file -> URL
+case_source_relationships <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/godata/relationships_clean.rds") %>%  # FIX: swapped their local file for the github copy
   select(source_age, target_age) 
 
 trans_matrix <- ggplot(
@@ -9305,7 +9305,7 @@ pacman::p_load(
   patchwork       # combine plots
 )
 
-malaria_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds")  # FIX: local file -> URL
+malaria_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds")  # FIX: swapped their local file for the github copy
 
 # bar chart of total cases by district
 p1 <- ggplot(malaria_data, aes(x = District, y = malaria_tot)) +
@@ -9519,7 +9519,7 @@ pacman::p_load(
 ) 
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # import the counts data into R
 count_data <- linelist %>% 
@@ -9546,7 +9546,7 @@ ggplot(data = linelist)+
   geom_histogram(aes(x = date_onset))
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 central_data <- linelist %>% 
   filter(hospital == "Central Hospital")
@@ -10520,7 +10520,7 @@ pacman::p_load(rio,       # to import data
                stringr)   # working with strings for titles, captions, etc.
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import case linelist 
 # linelist <- import("linelist_cleaned.rds")
@@ -10690,7 +10690,7 @@ min_per
 
 
 # import the population demographics data
-pop <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/standardization/country_demographics.csv")  # FIX: local file -> URL
+pop <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/standardization/country_demographics.csv")  # FIX: swapped their local file for the github copy
 
 # # import the population demographics data
 # pop <- rio::import("country_demographics.csv")
@@ -10804,7 +10804,7 @@ ggplot()+  # default x-axis is age in years;
 
 
 # import the likert survey response data
-likert_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/likert_data.csv")  # FIX: local file -> URL
+likert_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/likert_data.csv")  # FIX: swapped their local file for the github copy
 
 # # import the likert survey response data
 # likert_data <- rio::import("likert_data.csv")
@@ -10916,7 +10916,7 @@ pacman::p_load(
   lubridate        # working with dates
   )
 
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # linelist <- import("linelist_cleaned.rds")
 
@@ -10970,7 +10970,7 @@ ggplot(data = long_prop)+       # use long data, with proportions as Freq
   )
   
 
-facility_count_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds") %>%  # FIX: local file -> URL
+facility_count_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds") %>%  # FIX: swapped their local file for the github copy
   select(location_name, data_date, District, malaria_tot)
 
 # facility_count_data <- import("malaria_facility_count_data.rds")
@@ -11191,7 +11191,7 @@ pacman::p_load(
   tidyverse)      # data management and visualization
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -11499,7 +11499,7 @@ pacman::p_load(tidyverse,
                ggupset)
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # Adds new symptom variables to the linelist, with random "yes" or "no" values 
 linelist_sym <- linelist %>% 
@@ -11540,7 +11540,7 @@ pacman::p_load(
   ggupset)       # special package for combination plots
 
 # import the linelist into R
-linelist_sym <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist_sym <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import case linelist 
 # linelist_sym <- import("linelist_cleaned.rds")
@@ -11637,7 +11637,7 @@ pacman::p_load(tidyverse,
 library(epicontacts)
 
 ## load linelist
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds") %>%  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds") %>%  # FIX: swapped their local file for the github copy
   filter(!duplicated(case_id))
 ## generate contacts
 contacts <- linelist %>%
@@ -11696,7 +11696,7 @@ plot(
 # pacman::p_install_gh("reconhub/epicontacts@timeline")
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.xlsx")
@@ -11997,9 +11997,9 @@ mean(deg_both)
 
 pacman::p_load(here, ggplot2, dplyr, ape, ggtree, treeio, ggnewscale, tidytree)
 
-tree <- ape::read.tree("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/phylo/Shigella_tree.txt")  # FIX: local file -> URL
+tree <- ape::read.tree("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/phylo/Shigella_tree.txt")  # FIX: swapped their local file for the github copy
 
-sample_data <- read.csv("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/phylo/sample_data_Shigella_tree.csv",sep=",", na.strings=c("NA"), head = TRUE, stringsAsFactors=F)  # FIX: local file -> URL
+sample_data <- read.csv("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/phylo/sample_data_Shigella_tree.csv",sep=",", na.strings=c("NA"), head = TRUE, stringsAsFactors=F)  # FIX: swapped their local file for the github copy
 
 
 ggtree(tree, layout="circular", branch.length='none') %<+% sample_data + # the %<+% is used to add your dataframe with sample data to the tree
@@ -12027,13 +12027,13 @@ pacman::p_load(
   ggnewscale)      # to add additional layers of color schemes
 
 
-tree <- ape::read.tree("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/phylo/Shigella_tree.txt")  # FIX: local file -> URL
+tree <- ape::read.tree("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/phylo/Shigella_tree.txt")  # FIX: swapped their local file for the github copy
 
 # tree <- ape::read.tree("Shigella_tree.txt")
 
 tree
 
-sample_data <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/phylo/sample_data_Shigella_tree.csv")  # FIX: local file -> URL
+sample_data <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/phylo/sample_data_Shigella_tree.csv")  # FIX: swapped their local file for the github copy
 
 # sample_data <- import("sample_data_Shigella_tree.csv")
 
@@ -12397,7 +12397,7 @@ h5
 # Chapter 39 - Interactive plots
 
 pacman::p_load(plotly, rio, here, ggplot2, dplyr, lubridate)
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 ## these buttons are superfluous/distracting
 plotly_buttons_remove <- list('zoom2d','pan2d','lasso2d', 'select2d','zoomIn2d',
@@ -12430,7 +12430,7 @@ pacman::p_load(
   ) 
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import case linelist 
 # linelist <- import("linelist_cleaned.rds")
@@ -12477,7 +12477,7 @@ p %>%
 #   plotly::config(displaylogo = FALSE, modeBarButtonsToRemove = plotly_buttons_remove)
 
 # import data
-facility_count_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds")  # FIX: local file -> URL
+facility_count_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds")  # FIX: swapped their local file for the github copy
 
 # aggregate data into Weeks for Spring district
 agg_weeks <- facility_count_data %>% 
@@ -12648,7 +12648,7 @@ pacman::p_load(
 )
 
 # import the linelist into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
 # # import the linelist
 # linelist <- import("linelist_cleaned.rds")
@@ -12773,7 +12773,7 @@ linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbo
 pacman::p_load("tidyverse", "lubridate")
 
 # read data
-malaria_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds") %>%  # FIX: local file -> URL
+malaria_data <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/malaria_facility_count_data.rds") %>%  # FIX: swapped their local file for the github copy
   as_tibble()
 
 print(malaria_data)
@@ -13595,9 +13595,9 @@ pacman::p_load(
   )
 
 # import the linelists into R
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds")  # FIX: swapped their local file for the github copy
 
-flu_china <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/fluH7N9_China_2013.csv")  # FIX: local file -> URL
+flu_china <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/fluH7N9_China_2013.csv")  # FIX: swapped their local file for the github copy
 
 
 #
@@ -14044,7 +14044,7 @@ pacman::p_load(
   here 
   ) 
 
-linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/linelist_cleaned.xlsx") %>% data.table()  # FIX: local file -> URL
+linelist <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/linelist_cleaned.xlsx") %>% data.table()  # FIX: swapped their local file for the github copy
 
 dim(linelist) #gives the number of rows and columns in the data table
 

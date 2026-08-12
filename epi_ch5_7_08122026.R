@@ -186,7 +186,7 @@ pacman::p_load(
 # HIDDEN FROM READER
 ####################
 # Create second header row of "data dictionary" and insert into row 2. Save as new dataframe.
-linelist_2headers <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds") %>%  # FIX: local file -> URL
+linelist_2headers <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds") %>%  # FIX: swapped their local file for the github copy
         mutate(across(everything(), as.character)) %>% 
         add_row(.before = 1,
                 #row_num = "000",
