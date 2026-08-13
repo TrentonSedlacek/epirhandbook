@@ -271,7 +271,7 @@ manual_entry_cols <- data.frame(PatientID, Treatment, Death)
 #   sep = "t",           # separator could be tab, or commas, etc.
 #   header=TRUE)         # if there is a header row
 
-# FIX: not in the book. It assumes you already have these files, so grab them off github first
+# FIX: not in the book. It assumes you already have these files, so grabbing them off github
 linelists_dir <- file.path(tempdir(), "linelists")
 dir.create(linelists_dir, showWarnings = FALSE)
 for (f in c("20201007linelist.csv",
@@ -352,7 +352,7 @@ latest_file  # print name of latest file
 #   pluck("establishments") %>%
 #   as_tibble()
 
-# Kevin and Chris redid the block above in httr2, since httr is retired.
+# Kevin and Chris redid the block above in httr2.
 # httr2 isn't in the Chapter 5 list so grab it here.
 pacman::p_load(httr2, tidyverse)
 
@@ -368,8 +368,7 @@ my_response <- my_request %>%
 
 my_response$status_code
 
-# resp_body_json gives you a nested list, so it takes more unnesting than the
-# httr version above where fromJSON(flatten = TRUE) did it in one go.
+# resp_body_json leaves it all nested, so more unnesting than the httr version.
 my_data <- my_response %>%
   resp_body_json() %>%
   pluck("establishments") %>%
@@ -437,9 +436,8 @@ glimpse(my_data)
 # The path typed straight in. Fine if you have K mapped the same way I do.
 flu <- rio::import("K:/R Study Group/Trenton/flu_demo_data.xlsx")
 
-# Same file, but the folder is its own object now.
-# Kevin is on EDV instead of K and has had to repoint this twice already.
-# Doing it this way means one line to change instead of every import in the script.
+# Same file but with the folder pulled out on its own.
+# Kevin is on EDV not K and has had to repoint this twice already, so this way it's one spot to fix.
 study_folder <- "K:/R Study Group/Trenton"
 flu <- rio::import(file.path(study_folder, "flu_demo_data.xlsx"))
 
