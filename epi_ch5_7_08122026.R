@@ -352,6 +352,34 @@ latest_file  # print name of latest file
 #   pluck("establishments") %>%
 #   as_tibble()
 
+# Kevin and Chris redid the block above in httr2, since httr is retired.
+# httr2 isn't in the Chapter 5 list so grab it here.
+pacman::p_load(httr2, tidyverse)
+
+my_request <- request("http://api.ratings.food.gov.uk/Establishments") %>%
+  req_headers("x-api-version" = "2") %>%
+  req_url_query(localAuthorityId = 188,
+                BusinessTypeId = 7844,
+                pageNumber = 1,
+                pageSize = 5000)
+
+my_response <- my_request %>%
+  req_perform()
+
+my_response$status_code
+
+# resp_body_json gives you a nested list, so it takes more unnesting than the
+# httr version above where fromJSON(flatten = TRUE) did it in one go.
+my_data <- my_response %>%
+  resp_body_json() %>%
+  pluck("establishments") %>%
+  tibble(establishments = .) %>%
+  unnest_wider(establishments) %>%
+  unnest_wider(scores) %>%
+  unnest_wider(geocode)
+
+glimpse(my_data)
+
 # # set credentials for authorization
 # url <- "https://godatasampleURL.int/"           # valid Go.Data instance url
 # username <- "username"                          # valid Go.Data username 
@@ -405,7 +433,19 @@ latest_file  # print name of latest file
 
 # Chapter 7 practice: import my flu demo data from the study group folder
 # Made-up data for this demo, don't reuse it thinking it's real.
+
+# The path typed straight in. Fine if you have K mapped the same way I do.
 flu <- rio::import("K:/R Study Group/Trenton/flu_demo_data.xlsx")
+
+# Same file, but the folder is its own object now.
+# Kevin is on EDV instead of K and has had to repoint this twice already.
+# Doing it this way means one line to change instead of every import in the script.
+study_folder <- "K:/R Study Group/Trenton"
+flu <- rio::import(file.path(study_folder, "flu_demo_data.xlsx"))
+
+# And if you have no clue where the file is, run this one on its own.
+# The pop-up likes to hide behind RStudio.
+# flu <- rio::import(file.choose())
 
 head(flu, 10)
 
