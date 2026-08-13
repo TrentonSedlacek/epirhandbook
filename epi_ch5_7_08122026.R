@@ -186,7 +186,7 @@ pacman::p_load(
 # HIDDEN FROM READER
 ####################
 # Create second header row of "data dictionary" and insert into row 2. Save as new dataframe.
-linelist_2headers <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds") %>%  # FIX: swapped their local file for the github copy
+linelist_2headers <- rio::import("https://raw.githubusercontent.com/appliedepi/epirhandbook_eng/master/data/case_linelists/linelist_cleaned.rds") %>%  # FIX
         mutate(across(everything(), as.character)) %>% 
         add_row(.before = 1,
                 #row_num = "000",
@@ -271,7 +271,7 @@ manual_entry_cols <- data.frame(PatientID, Treatment, Death)
 #   sep = "t",           # separator could be tab, or commas, etc.
 #   header=TRUE)         # if there is a header row
 
-# FIX: not in the book. It assumes you already have these files, so grabbing them off github
+# ADDED: not in the book
 linelists_dir <- file.path(tempdir(), "linelists")
 dir.create(linelists_dir, showWarnings = FALSE)
 for (f in c("20201007linelist.csv",
@@ -286,7 +286,7 @@ for (f in c("20201007linelist.csv",
     file.path(linelists_dir, f), mode = "wb")
 }
 
-# FIX: swapped the book's folder path for the temp folder above
+# FIX
 linelist_filenames <- dir(linelists_dir) # get file names from folder
 linelist_filenames                                              # print
 
@@ -309,7 +309,7 @@ pacman::p_load(
   fs)                # directory interactions
 
 # extract the file name of latest file
-# FIX: same folder swap as above
+# FIX
 latest_file <- dir(linelists_dir) %>%  # file names from "linelists" sub-folder          
   str_extract("[0-9].*[0-9]") %>%                  # pull out dates (numbers)
   ymd() %>%                                        # convert numbers to dates (assuming year-month-day format)
@@ -352,8 +352,7 @@ latest_file  # print name of latest file
 #   pluck("establishments") %>%
 #   as_tibble()
 
-# Kevin and Chris redid the block above in httr2.
-# httr2 isn't in the Chapter 5 list so grab it here.
+# ADDED: Kevin and Chris httr2 version of the block above
 pacman::p_load(httr2, tidyverse)
 
 my_request <- request("http://api.ratings.food.gov.uk/Establishments") %>%
@@ -368,7 +367,6 @@ my_response <- my_request %>%
 
 my_response$status_code
 
-# resp_body_json leaves it all nested, so more unnesting than the httr version.
 my_data <- my_response %>%
   resp_body_json() %>%
   pluck("establishments") %>%
@@ -430,19 +428,13 @@ glimpse(my_data)
 # rio::import_list("my_list.Rdata")
 
 
-# Chapter 7 practice: import my flu demo data from the study group folder
-# Made-up data for this demo, don't reuse it thinking it's real.
+# ADDED: practice with my flu demo data. Made-up data, don't reuse it thinking it's real.
 
-# The path typed straight in. Fine if you have K mapped the same way I do.
 flu <- rio::import("K:/R Study Group/Trenton/flu_demo_data.xlsx")
 
-# Same file but with the folder pulled out on its own.
-# Kevin is on EDV not K and has had to repoint this twice already, so this way it's one spot to fix.
 study_folder <- "K:/R Study Group/Trenton"
 flu <- rio::import(file.path(study_folder, "flu_demo_data.xlsx"))
 
-# And if you have no clue where the file is, run this one on its own.
-# The pop-up likes to hide behind RStudio.
 # flu <- rio::import(file.choose())
 
 head(flu, 10)
