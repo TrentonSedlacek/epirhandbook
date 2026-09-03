@@ -14,13 +14,22 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 # Connect to libraries
 
 ```{r packages}
-pacman::p_load(rio, here, lubridate, parsedate, zoo, tidyverse, magrittr)
+options(repos = c(CRAN = "https://cloud.r-project.org")) # So package installs work anywhere, not just inside RStudio
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman") # pacman installs and loads everything else
+pacman::p_load(rio, lubridate, parsedate, zoo, tidyverse, magrittr)
 ```
 
 # Connect to data
 
 ```{r load-data}
-linelist <- here("Data", "linelist_cleaned.xlsx") %>% import()
+# The data download themselves from the handbook's GitHub into a temporary folder, so this file runs from anywhere
+data_file <- file.path(tempdir(), "linelist_cleaned.xlsx")
+if (!file.exists(data_file)) {
+  download.file("https://raw.githubusercontent.com/appliedepi/epirhandbook/main/data/linelist_cleaned.xlsx",
+                data_file, mode = "wb")
+}
+
+linelist <- import(data_file)
 glimpse(linelist)
 ```
 
@@ -108,8 +117,7 @@ linelist %>%
 ## Applying date class conversions
 
 ```{r apply-date-class}
-linelist <- here("Data", "linelist_cleaned.xlsx") %>% 
-  import() %>% 
+linelist <- import(data_file) %>% 
   mutate(across(where(is.POSIXct), as.Date)) # Convert every datetime column to Date
 
 linelist %>% 
