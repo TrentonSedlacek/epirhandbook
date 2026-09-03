@@ -50,6 +50,7 @@ Sys.time()
 ## base R
 
 ```{r eval=F}
+# no output here: example only, not run
 # Convert to class date
 linelist <- linelist %>% 
   mutate(date_onset = as.Date(date_of_onset, format = "%d/%m/%Y"))
@@ -81,11 +82,13 @@ dmy("11 October 2020")
 ```
 
 ```{r, eval=F}
+# no output here: example only, not run
 linelist <- linelist %>%
   mutate(date_onset = lubridate::dmy(date_onset))
 ```
 
 ```{r, eval=F}
+# no output here: example only, not run
 # Check the class of the column
 class(linelist$date_onset)  
 ```
@@ -98,6 +101,7 @@ str_glue("20{two_digit_years}")
 ## Combine columns
 
 ```{r, eval=F}
+# no output here: example only, not run
 linelist <- linelist %>% 
   mutate(onset_date = make_date(year = onset_year, month = onset_month, day = onset_day))
 ```
@@ -105,6 +109,7 @@ linelist <- linelist %>%
 # Excel dates
 
 ```{r, eval = FALSE}
+# no output here: example only, not run
 # An example of providing the Excel 'origin date' when converting Excel number dates
 data_cleaned <- data %>% 
   mutate(date_onset = as.numeric(date_onset)) %>%   # ensure class is numeric
@@ -120,6 +125,7 @@ parsedate::parse_date(c("03 January 2018",
 ```
 
 ```{r eval = FALSE}
+# no output here: example only, not run
 # An example using parse_date() on the column date_onset
 linelist <- linelist %>%      
   mutate(date_onset = parse_date(date_onset))
@@ -148,6 +154,7 @@ mdy_hms("01 January 2020, 16:20:40 PST")
 ```
 
 ```{r, eval = FALSE}
+# no output here: example only, not run
 # packages
 pacman::p_load(tidyverse, lubridate, stringr)
 
@@ -215,6 +222,7 @@ wday(example_date)   # day number of the week (1-7)
 ```
 
 ```{r, eval=F}
+# no output here: example only, not run
 example_datetime <- ymd_hm("2020-03-01 14:45")
 
 hour(example_datetime)     # extract hour
@@ -242,6 +250,7 @@ class(output)
 ```
 
 ```{r, eval = F}
+# no output here: example only, not run
 pacman::p_load(lubridate, tidyverse)   # load packages
 
 linelist <- linelist %>%
@@ -258,6 +267,7 @@ linelist <- linelist %>%
 ```
 
 ```{r, eval = FALSE}
+# no output here: example only, not run
 # calculate the median number of days to hospitalisation for all cases where data are available
 median(linelist_delay$days_onset_to_hosp, na.rm = T)
 ```
