@@ -38,6 +38,7 @@ Sys.Date()   # base R
 Sys.time()
 today()      # lubridate
 now()
+date()       # date and time as text
 ```
 
 # Converting text to dates
@@ -53,10 +54,18 @@ as.Date("11/10/2020", format = "%d/%m/%Y")     # %d = day, %m = month, %Y = 4-di
 
 ```{r}
 ymd("2020-10-11")
+ymd("20201011")
 mdy("10/11/2020")
 mdy("Oct 11 20")
 dmy("11 10 2020")
 dmy("11 October 2020")
+```
+
+## Two-digit years
+
+```{r}
+two_digit_years <- c("15", "15", "16", "17")
+paste0("20", two_digit_years)   # add the century first, then convert; the handbook uses str_glue() for this
 ```
 
 ## Converting the date columns in the linelist
@@ -71,10 +80,17 @@ linelist <- linelist %>%
 class(linelist$date_onset)
 ```
 
+## Building a date from separate year, month, and day columns
+
+```{r}
+make_date(year = 2014, month = 5, day = 13)   # works the same on columns, e.g. make_date(onset_year, onset_month, onset_day)
+```
+
 # Excel dates
 
 ```{r}
-as.Date(41772, origin = "1899-12-30")   # Excel stores dates as day counts from 30 Dec 1899
+as.numeric(as.Date("1970-01-01"))       # R counts days from 1 Jan 1970
+as.Date(41772, origin = "1899-12-30")   # Excel counts from 30 Dec 1899, so give it that origin instead of a format
 ```
 
 # Messy dates
@@ -86,25 +102,38 @@ parsedate::parse_date(c("03 January 2018", "07/03/1982", "08/20/85"))   # guesse
 # Dates with times
 
 ```{r}
+ymd_h("2020-01-01 16hrs")
 ymd_h("2020-01-01 4PM")
 dmy_hm("01 January 2020 16:20")
-dmy_hms("01 January 2020, 16:20:40")   # the handbook uses mdy_hms() here and gets the wrong date
+dmy_hms("01 January 2020, 16:20:40")       # the handbook uses mdy_hms() here and gets the wrong date
+dmy_hms("01 January 2020, 16:20:40 PST")   # the time zone text is ignored
 ```
 
 ## Combining the date and time columns
 
 ```{r}
+# The handbook first fills missing times with the median, but its median() line doesn't work on text, so missing times stay missing here
 linelist <- linelist %>% 
   mutate(date_time_of_admission = ymd_hm(paste(date_hospitalisation, time_admission)))
 
 head(linelist$date_time_of_admission)
 ```
 
+## Times without dates
+
+```{r}
+time1 <- strptime("13:45", format = "%H:%M")   # today's date is assumed
+time2 <- strptime("15:20", format = "%H:%M")
+
+time2 - time1
+as.numeric(time2 - time1)   # difference in hours, as a plain number
+```
+
 ## Time of day from the admission time
 
 ```{r}
 linelist <- linelist %>% 
-  mutate(hour_admit = hour(date_time_of_admission),
+  mutate(hour_admit = hour(strptime(time_admission, format = "%H:%M")),
          time_period = case_when(hour_admit > 06 & hour_admit < 12 ~ "Morning",
                                  hour_admit >= 12 & hour_admit < 17 ~ "Afternoon",
                                  hour_admit >= 17 & hour_admit < 21 ~ "Evening",
@@ -117,11 +146,21 @@ table(linelist$time_period, useNA = "always")
 
 ```{r}
 example_date <- ymd("2020-03-01")
+```
 
-year(example_date)
+```{r}
 month(example_date)
 day(example_date)
+wday(example_date)                 # day of the week as a number, Sunday = 1
 wday(example_date, label = TRUE)
+```
+
+```{r}
+example_datetime <- ymd_hm("2020-03-01 14:45")
+
+hour(example_datetime)
+minute(example_datetime)
+second(example_datetime)
 ```
 
 # Date math
@@ -129,17 +168,26 @@ wday(example_date, label = TRUE)
 ```{r}
 example_date + days(3)
 example_date + weeks(7) - days(2)
-example_date - ymd("2020-02-20")                # difference between two dates
-as.numeric(example_date - ymd("2020-02-20"))    # as a plain number
+```
+
+## Difference between two dates
+
+```{r}
+output <- example_date - ymd("2020-02-20")
+output
+class(output)         # "difftime", not a plain number
+as.numeric(output)    # now it's a number you can calculate with
 ```
 
 ## Days from onset to hospitalisation
 
 ```{r}
-linelist <- linelist %>% 
+# The handbook's version subtracts date_of_onset, a column that doesn't exist
+march_cases <- linelist %>% 
+  filter(month(date_onset) == 3) %>%   # cases with onset in March
   mutate(days_onset_to_hosp = as.numeric(date_hospitalisation - date_onset))
 
-median(linelist$days_onset_to_hosp, na.rm = TRUE)
+median(march_cases$days_onset_to_hosp, na.rm = TRUE)   # na.rm = TRUE skips cases missing a date
 ```
 
 # Changing how dates look
@@ -147,7 +195,7 @@ median(linelist$days_onset_to_hosp, na.rm = TRUE)
 ```{r}
 format(Sys.Date(), "%d %B %Y")
 format(Sys.Date(), "%A")
-format(Sys.Date(), "%Y Week %W")
+format(Sys.Date(), "%Y Week %W")   # format() gives back text, so use it for display only
 ```
 
 ## Month-year that stays in the right order
@@ -156,7 +204,7 @@ format(Sys.Date(), "%Y Week %W")
 linelist <- linelist %>% 
   mutate(yearmonth = as.yearmon(date_onset))
 
-table(linelist$yearmonth)
+table(linelist$yearmonth)   # the handbook writes $yearmon, which only works by accident
 ```
 
 ```{r}
@@ -167,9 +215,11 @@ table(format(linelist$date_onset, "%b %Y"))   # plain text sorts alphabetically 
 
 ```{r}
 weekly_counts <- linelist %>% 
-  drop_na(date_onset) %>% 
-  mutate(week_onset = floor_date(date_onset, "week", week_start = 1)) %>%   # week_start = 1 means weeks start on Monday
-  count(week_onset)
+  drop_na(date_onset) %>%                                                   # drop cases with no onset date
+  mutate(week_onset = floor_date(date_onset, "week", week_start = 1)) %>%   # week_start = 1 means Monday; the default is Sunday, not Monday as the handbook says
+  count(week_onset, name = "cases_wk") %>% 
+  complete(week_onset = seq.Date(min(week_onset), max(week_onset), by = "week"),
+           fill = list(cases_wk = 0))                                        # add any weeks with zero cases
 
 head(weekly_counts)
 ```
@@ -178,17 +228,31 @@ head(weekly_counts)
 
 ```{r}
 time_now <- Sys.time()
+time_london_real <- with_tz(time_now, "Europe/London")     # same moment, London's clock
+time_london_local <- force_tz(time_now, "Europe/London")   # same clock time, relabelled as London
+
 time_now
-with_tz(time_now, "Europe/London")    # same moment, London's clock
-force_tz(time_now, "Europe/London")   # same clock time, relabelled as London
+time_london_real
+time_london_local
+time_london_real - time_london_local   # the gap between your time zone and London
 ```
 
 # Comparing each week to the one before
 
 ```{r}
 weekly_counts <- weekly_counts %>% 
-  mutate(cases_prev_wk = lag(n),
-         case_diff = n - cases_prev_wk)
+  mutate(cases_prev_wk = lag(cases_wk, n = 1),   # the previous row's count
+         case_diff = cases_wk - cases_prev_wk)
 
 head(weekly_counts, 10)
+```
+
+# Resources
+
+```{r}
+# lubridate: https://lubridate.tidyverse.org/
+# lubridate cheatsheet: https://rawgit.com/rstudio/cheatsheets/master/lubridate.pdf
+# R for Data Science, dates and times: https://r4ds.had.co.nz/dates-and-times.html
+# Online tutorial: https://www.statmethods.net/input/dates.html
+# Date formats: https://www.r-bloggers.com/2013/08/date-formats-in-r/
 ```
