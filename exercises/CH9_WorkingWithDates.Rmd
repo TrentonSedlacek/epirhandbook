@@ -11,248 +11,383 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-# Packages
+# Preparation
 
-```{r}
-pacman::p_load(rio, lubridate, parsedate, zoo, tidyverse)
+## Load packages
+
+```{r dates_packages, warning=F, message=F}
+# Checks if package is installed, installs if necessary, and loads package for current session
+
+pacman::p_load(
+  lubridate,  # general package for handling and converting dates  
+  parsedate,  # has function to "guess" messy dates
+  aweek,      # another option for converting dates to weeks, and weeks to dates
+  zoo,        # additional date/time functions
+  DT,         # interactive tables
+  here,       # file management
+  rio,        # data import/export
+  tidyverse)  # data management and visualization  
 ```
 
-# Data
+## Import data
 
 ```{r}
-linelist <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook/main/data/linelist_cleaned.xlsx")
-glimpse(linelist)
+linelist <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook/main/data/linelist_cleaned.rds")
 ```
 
-# Check what class the date columns are
+# Current date
 
 ```{r}
-class(linelist$date_onset)      # datetime, not Date
-class(linelist$time_admission)  # text like "09:36"
-```
+# get the system date - this is a DATE class
+Sys.Date()
 
-# Today's date
-
-```{r}
-Sys.Date()   # base R
+# get the system time - this is a DATETIME class
 Sys.time()
-today()      # lubridate
-now()
-date()       # date and time as text
 ```
 
-# Converting text to dates
+# Convert to Date
 
-## base R: as.Date() needs to be told the format
+## base R
 
-```{r}
-as.Date("2020-10-11")                          # already year-month-day, no format needed
-as.Date("11/10/2020", format = "%d/%m/%Y")     # %d = day, %m = month, %Y = 4-digit year
+```{r eval=F}
+# Convert to class date
+linelist <- linelist %>% 
+  mutate(date_onset = as.Date(date_of_onset, format = "%d/%m/%Y"))
 ```
 
-## lubridate: just say the order of the parts
+## lubridate
+
+```{r, }
+# install/load lubridate 
+pacman::p_load(lubridate)
+```
 
 ```{r}
+# read date in year-month-day format
 ymd("2020-10-11")
 ymd("20201011")
+```
+
+```{r}
+# read date in month-day-year format
 mdy("10/11/2020")
 mdy("Oct 11 20")
+```
+
+```{r}
+# read date in day-month-year format
 dmy("11 10 2020")
 dmy("11 October 2020")
 ```
 
-## Two-digit years
+```{r, eval=F}
+linelist <- linelist %>%
+  mutate(date_onset = lubridate::dmy(date_onset))
+```
+
+```{r, eval=F}
+# Check the class of the column
+class(linelist$date_onset)  
+```
 
 ```{r}
 two_digit_years <- c("15", "15", "16", "17")
-paste0("20", two_digit_years)   # add the century first, then convert; the handbook uses str_glue() for this
+str_glue("20{two_digit_years}")
 ```
 
-## Converting the date columns in the linelist
+## Combine columns
 
-```{r}
+```{r, eval=F}
 linelist <- linelist %>% 
-  mutate(date_infection = as.Date(date_infection),
-         date_onset = as.Date(date_onset),
-         date_hospitalisation = as.Date(date_hospitalisation),
-         date_outcome = as.Date(date_outcome))
-
-class(linelist$date_onset)
-```
-
-## Building a date from separate year, month, and day columns
-
-```{r}
-make_date(year = 2014, month = 5, day = 13)   # works the same on columns, e.g. make_date(onset_year, onset_month, onset_day)
+  mutate(onset_date = make_date(year = onset_year, month = onset_month, day = onset_day))
 ```
 
 # Excel dates
 
-```{r}
-as.numeric(as.Date("1970-01-01"))       # R counts days from 1 Jan 1970
-as.Date(41772, origin = "1899-12-30")   # Excel counts from 30 Dec 1899, so give it that origin instead of a format
+```{r, eval = FALSE}
+# An example of providing the Excel 'origin date' when converting Excel number dates
+data_cleaned <- data %>% 
+  mutate(date_onset = as.numeric(date_onset)) %>%   # ensure class is numeric
+  mutate(date_onset = as.Date(date_onset, origin = "1899-12-30")) # convert to date using Excel origin
 ```
 
 # Messy dates
 
 ```{r}
-parsedate::parse_date(c("03 January 2018", "07/03/1982", "08/20/85"))   # guesses each format; check the guesses
+parsedate::parse_date(c("03 January 2018",
+                        "07/03/1982",
+                        "08/20/85"))
 ```
 
-# Dates with times
+```{r eval = FALSE}
+# An example using parse_date() on the column date_onset
+linelist <- linelist %>%      
+  mutate(date_onset = parse_date(date_onset))
+```
+
+# Working with date-time class
+
+## Convert dates with times
 
 ```{r}
 ymd_h("2020-01-01 16hrs")
 ymd_h("2020-01-01 4PM")
+```
+
+```{r}
 dmy_hm("01 January 2020 16:20")
-dmy_hms("01 January 2020, 16:20:40")       # the handbook uses mdy_hms() here and gets the wrong date
-dmy_hms("01 January 2020, 16:20:40 PST")   # the time zone text is ignored
 ```
 
-## Combining the date and time columns
-
 ```{r}
-# The handbook first fills missing times with the median, but its median() line doesn't work on text, so missing times stay missing here
-linelist <- linelist %>% 
-  mutate(date_time_of_admission = ymd_hm(paste(date_hospitalisation, time_admission)))
-
-head(linelist$date_time_of_admission)
+mdy_hms("01 January 2020, 16:20:40")
 ```
 
-## Times without dates
-
 ```{r}
-time1 <- strptime("13:45", format = "%H:%M")   # today's date is assumed
-time2 <- strptime("15:20", format = "%H:%M")
+mdy_hms("01 January 2020, 16:20:40 PST")
 
-time2 - time1
-as.numeric(time2 - time1)   # difference in hours, as a plain number
 ```
 
-## Time of day from the admission time
+```{r, eval = FALSE}
+# packages
+pacman::p_load(tidyverse, lubridate, stringr)
 
-```{r}
-linelist <- linelist %>% 
-  mutate(hour_admit = hour(strptime(time_admission, format = "%H:%M")),
-         time_period = case_when(hour_admit > 06 & hour_admit < 12 ~ "Morning",
-                                 hour_admit >= 12 & hour_admit < 17 ~ "Afternoon",
-                                 hour_admit >= 17 & hour_admit < 21 ~ "Evening",
-                                 hour_admit >= 21 | hour_admit <= 6 ~ "Night"))
+# time_admission is a column in hours:minutes
+linelist <- linelist %>%
+  
+  # when time of admission is not given, assign the median admission time
+  mutate(
+    time_admission_clean = ifelse(
+      is.na(time_admission),         # if time is missing
+      median(time_admission),        # assign the median
+      time_admission                 # if not missing keep as is
+  ) %>%
+  
+    # use str_glue() to combine date and time columns to create one character column
+    # and then use ymd_hm() to convert it to datetime
+  mutate(
+    date_time_of_admission = str_glue("{date_hospitalisation} {time_admission_clean}") %>% 
+      ymd_hm()
+  )
 
-table(linelist$time_period, useNA = "always")
 ```
 
-# Pulling pieces out of a date
+## Convert times alone
 
 ```{r}
+# raw character times
+time1 <- "13:45" 
+time2 <- "15:20"
+
+# Times converted to a datetime class
+time1_clean <- strptime(time1, format = "%H:%M")
+time2_clean <- strptime(time2, format = "%H:%M")
+
+# Difference is of class "difftime" by default, here converted to numeric hours 
+as.numeric(time2_clean - time1_clean)   # difference in hours
+
+```
+
+## Extract time
+
+```{r}
+linelist <- linelist %>%
+  mutate(hour_admit = hour(strptime(time_admission, format = "%H:%M"))) %>%
+  mutate(time_period = case_when(
+    hour_admit > 06 & hour_admit < 12 ~ "Morning",
+    hour_admit >= 12 & hour_admit < 17 ~ "Afternoon",
+    hour_admit >= 17 & hour_admit < 21 ~ "Evening",
+    hour_admit >=21 | hour_admit <= 6 ~ "Night"))
+```
+
+# Working with dates
+
+```{r, }
+# create object of class Date
 example_date <- ymd("2020-03-01")
 ```
 
-```{r}
-month(example_date)
-day(example_date)
-wday(example_date)                 # day of the week as a number, Sunday = 1
-wday(example_date, label = TRUE)
-```
+## Extract date components
 
 ```{r}
+month(example_date)  # month number
+day(example_date)    # day (number) of the month
+wday(example_date)   # day number of the week (1-7)
+```
+
+```{r, eval=F}
 example_datetime <- ymd_hm("2020-03-01 14:45")
 
-hour(example_datetime)
-minute(example_datetime)
-second(example_datetime)
+hour(example_datetime)     # extract hour
+minute(example_datetime)   # extract minute
+second(example_datetime)   # extract second
 ```
 
-# Date math
+## Date math
 
 ```{r}
+# add 3 days to this date
 example_date + days(3)
+  
+# add 7 weeks and subtract two days from this date
 example_date + weeks(7) - days(2)
 ```
 
-## Difference between two dates
+## Date intervals
 
 ```{r}
+# find the interval between this date and Feb 20 2020 
 output <- example_date - ymd("2020-02-20")
-output
-class(output)         # "difftime", not a plain number
-as.numeric(output)    # now it's a number you can calculate with
+output    # print
+class(output)
 ```
 
-## Days from onset to hospitalisation
+```{r, eval = F}
+pacman::p_load(lubridate, tidyverse)   # load packages
 
-```{r}
-# The handbook's version subtracts date_of_onset, a column that doesn't exist
-march_cases <- linelist %>% 
-  filter(month(date_onset) == 3) %>%   # cases with onset in March
-  mutate(days_onset_to_hosp = as.numeric(date_hospitalisation - date_onset))
-
-median(march_cases$days_onset_to_hosp, na.rm = TRUE)   # na.rm = TRUE skips cases missing a date
+linelist <- linelist %>%
+  
+  # convert date of onset from character to date objects by specifying dmy format
+  mutate(date_onset = dmy(date_onset),
+         date_hospitalisation = dmy(date_hospitalisation)) %>%
+  
+  # filter out all cases without onset in march
+  filter(month(date_onset) == 3) %>%
+    
+  # find the difference in days between onset and hospitalisation
+  mutate(days_onset_to_hosp = date_hospitalisation - date_of_onset)
 ```
 
-# Changing how dates look
-
-```{r}
-format(Sys.Date(), "%d %B %Y")
-format(Sys.Date(), "%A")
-format(Sys.Date(), "%Y Week %W")   # format() gives back text, so use it for display only
+```{r, eval = FALSE}
+# calculate the median number of days to hospitalisation for all cases where data are available
+median(linelist_delay$days_onset_to_hosp, na.rm = T)
 ```
 
-## Month-year that stays in the right order
+# Date display
+
+## `format()`
 
 ```{r}
-linelist <- linelist %>% 
-  mutate(yearmonth = as.yearmon(date_onset))
+# today's date, with formatting
+format(Sys.Date(), format = "%d %B %Y")
 
-table(linelist$yearmonth)   # the handbook writes $yearmon, which only works by accident
+# easy way to get full date and time (default formatting)
+date()
+
+# formatted combined date, time, and time zone using str_glue() function
+str_glue("{format(Sys.Date(), format = '%A, %B %d %Y, %z  %Z, ')}{format(Sys.time(), format = '%H:%M:%S')}")
+
+# Using format to display weeks
+format(Sys.Date(), "%Y Week %W")
+```
+
+## Month-Year
+
+```{r}
+# create new column 
+test_zoo <- linelist %>% 
+     mutate(yearmonth = zoo::as.yearmon(date_onset))
+
+# print table
+table(test_zoo$yearmon)
 ```
 
 ```{r}
-table(format(linelist$date_onset, "%b %Y"))   # plain text sorts alphabetically instead
+# create new column
+test_format <- linelist %>% 
+     mutate(yearmonth = format(date_onset, "%b %Y"))
+
+# print table
+table(test_format$yearmon)
 ```
 
-# Weekly case counts
+# Epidemiological weeks
+
+## Weekly counts
 
 ```{r}
+# Make aggregated dataset of weekly case counts
 weekly_counts <- linelist %>% 
-  drop_na(date_onset) %>%                                                   # drop cases with no onset date
-  mutate(week_onset = floor_date(date_onset, "week", week_start = 1)) %>%   # week_start = 1 means Monday; the default is Sunday, not Monday as the handbook says
-  count(week_onset, name = "cases_wk") %>% 
-  complete(week_onset = seq.Date(min(week_onset), max(week_onset), by = "week"),
-           fill = list(cases_wk = 0))                                        # add any weeks with zero cases
-
-head(weekly_counts)
+  drop_na(date_onset) %>%             # remove cases missing onset date
+  mutate(weekly_cases = floor_date(   # make new column, week of onset
+    date_onset,
+    unit = "week")) %>%            
+  count(weekly_cases) %>%           # group data by week and count rows per group (creates column 'n')
+  tidyr::complete(                  # ensure all weeks are present, even those with no cases reported
+    weekly_cases = seq.Date(          # re-define the "weekly_cases" column as a complete sequence,
+      from = min(weekly_cases),       # from the minimum date
+      to = max(weekly_cases),         # to the maxiumum date
+      by = "week"),                   # by weeks
+    fill = list(n = 0))             # fill-in NAs in the n counts column with 0
 ```
 
-# Time zones
+```{r message=FALSE, echo=F}
+DT::datatable(head(weekly_counts, 20), rownames = FALSE, options = list(pageLength = 5, scrollX=T), class = 'white-space: nowrap' )
+```
+
+# Converting dates/time zones
 
 ```{r}
+# assign the current time to a column
 time_now <- Sys.time()
-time_london_real <- with_tz(time_now, "Europe/London")     # same moment, London's clock
-time_london_local <- force_tz(time_now, "Europe/London")   # same clock time, relabelled as London
-
 time_now
-time_london_real
-time_london_local
-time_london_real - time_london_local   # the gap between your time zone and London
+
+# use with_tz() to assign a new timezone to the column, while CHANGING the clock time
+time_london_real <- with_tz(time_now, "Europe/London")
+
+# use force_tz() to assign a new timezone to the column, while KEEPING the clock time
+time_london_local <- force_tz(time_now, "Europe/London")
+
+
+# note that as long as the computer that was used to run this code is NOT set to London time,
+# there will be a difference in the times 
+# (the number of hours difference from the computers time zone to london)
+time_london_real - time_london_local
+
 ```
 
-# Comparing each week to the one before
+# Lagging and leading calculations
 
 ```{r}
-weekly_counts <- weekly_counts %>% 
-  mutate(cases_prev_wk = lag(cases_wk, n = 1),   # the previous row's count
-         case_diff = cases_wk - cases_prev_wk)
+counts <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook/main/data/example/district_weekly_count_data.xlsx") %>% 
+  filter(District == "Nibari") %>% 
+  mutate(Date = as.Date(Date),
+         week_start = lubridate::floor_date(Date, "week")) %>%
+  group_by(week_start) %>% 
+  summarize(cases_wk = sum(Cases, na.rm=T)) %>% 
+  complete(week_start = seq.Date(min(week_start), max(week_start), by = "week"), fill = list(cases_wk = 0))
+```
 
-head(weekly_counts, 10)
+```{r message=FALSE, echo=F}
+DT::datatable(counts, rownames = FALSE,  options = list(pageLength = 5, scrollX=T), class = 'white-space: nowrap' )
+```
+
+```{r}
+counts <- counts %>% 
+  mutate(cases_prev_wk = lag(cases_wk, n = 1))
+```
+
+```{r message=FALSE, echo=F}
+DT::datatable(counts, rownames = FALSE,  options = list(pageLength = 5, scrollX=T), class = 'white-space: nowrap' )
+```
+
+```{r}
+counts <- counts %>% 
+  mutate(cases_prev_wk = lag(cases_wk, n = 1),
+         case_diff = cases_wk - cases_prev_wk)
+```
+
+```{r message=FALSE, echo=F}
+DT::datatable(counts, rownames = FALSE,  options = list(pageLength = 5, scrollX=T), class = 'white-space: nowrap' )
 ```
 
 # Resources
 
-```{r}
-# lubridate: https://lubridate.tidyverse.org/
-# lubridate cheatsheet: https://rawgit.com/rstudio/cheatsheets/master/lubridate.pdf
-# R for Data Science, dates and times: https://r4ds.had.co.nz/dates-and-times.html
-# Online tutorial: https://www.statmethods.net/input/dates.html
-# Date formats: https://www.r-bloggers.com/2013/08/date-formats-in-r/
-```
+**lubridate** [tidyverse page](https://lubridate.tidyverse.org/)
+
+**lubridate** RStudio [cheatsheet](https://rawgit.com/rstudio/cheatsheets/master/lubridate.pdf)
+
+R for Data Science page on [dates and times](https://r4ds.had.co.nz/dates-and-times.html)
+
+[Online tutorial](https://www.statmethods.net/input/dates.html)
+
+[Date formats](https://www.r-bloggers.com/2013/08/date-formats-in-r/)
