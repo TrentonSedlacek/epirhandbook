@@ -23,7 +23,7 @@ pacman::p_load(
   parsedate,  # has function to "guess" messy dates
   aweek,      # another option for converting dates to weeks, and weeks to dates
   zoo,        # additional date/time functions
-  DT,         # interactive tables
+  DT,
   here,       # file management
   rio,        # data import/export
   tidyverse)  # data management and visualization  
@@ -46,14 +46,6 @@ Sys.time()
 ```
 
 # Convert to Date
-
-## base R
-
-```{r eval=F}
-# Convert to class date
-linelist <- linelist %>% 
-  mutate(date_onset = as.Date(date_of_onset, format = "%d/%m/%Y"))
-```
 
 ## lubridate
 
@@ -80,12 +72,7 @@ dmy("11 10 2020")
 dmy("11 October 2020")
 ```
 
-```{r, eval=F}
-linelist <- linelist %>%
-  mutate(date_onset = lubridate::dmy(date_onset))
-```
-
-```{r, eval=F}
+```{r}
 # Check the class of the column
 class(linelist$date_onset)  
 ```
@@ -95,34 +82,12 @@ two_digit_years <- c("15", "15", "16", "17")
 str_glue("20{two_digit_years}")
 ```
 
-## Combine columns
-
-```{r, eval=F}
-linelist <- linelist %>% 
-  mutate(onset_date = make_date(year = onset_year, month = onset_month, day = onset_day))
-```
-
-# Excel dates
-
-```{r, eval = FALSE}
-# An example of providing the Excel 'origin date' when converting Excel number dates
-data_cleaned <- data %>% 
-  mutate(date_onset = as.numeric(date_onset)) %>%   # ensure class is numeric
-  mutate(date_onset = as.Date(date_onset, origin = "1899-12-30")) # convert to date using Excel origin
-```
-
 # Messy dates
 
 ```{r}
 parsedate::parse_date(c("03 January 2018",
                         "07/03/1982",
                         "08/20/85"))
-```
-
-```{r eval = FALSE}
-# An example using parse_date() on the column date_onset
-linelist <- linelist %>%      
-  mutate(date_onset = parse_date(date_onset))
 ```
 
 # Working with date-time class
@@ -144,30 +109,6 @@ mdy_hms("01 January 2020, 16:20:40")
 
 ```{r}
 mdy_hms("01 January 2020, 16:20:40 PST")
-
-```
-
-```{r, eval = FALSE}
-# packages
-pacman::p_load(tidyverse, lubridate, stringr)
-
-# time_admission is a column in hours:minutes
-linelist <- linelist %>%
-  
-  # when time of admission is not given, assign the median admission time
-  mutate(
-    time_admission_clean = ifelse(
-      is.na(time_admission),         # if time is missing
-      median(time_admission),        # assign the median
-      time_admission                 # if not missing keep as is
-  ) %>%
-  
-    # use str_glue() to combine date and time columns to create one character column
-    # and then use ymd_hm() to convert it to datetime
-  mutate(
-    date_time_of_admission = str_glue("{date_hospitalisation} {time_admission_clean}") %>% 
-      ymd_hm()
-  )
 
 ```
 
@@ -214,7 +155,7 @@ day(example_date)    # day (number) of the month
 wday(example_date)   # day number of the week (1-7)
 ```
 
-```{r, eval=F}
+```{r}
 example_datetime <- ymd_hm("2020-03-01 14:45")
 
 hour(example_datetime)     # extract hour
@@ -239,27 +180,6 @@ example_date + weeks(7) - days(2)
 output <- example_date - ymd("2020-02-20")
 output    # print
 class(output)
-```
-
-```{r, eval = F}
-pacman::p_load(lubridate, tidyverse)   # load packages
-
-linelist <- linelist %>%
-  
-  # convert date of onset from character to date objects by specifying dmy format
-  mutate(date_onset = dmy(date_onset),
-         date_hospitalisation = dmy(date_hospitalisation)) %>%
-  
-  # filter out all cases without onset in march
-  filter(month(date_onset) == 3) %>%
-    
-  # find the difference in days between onset and hospitalisation
-  mutate(days_onset_to_hosp = date_hospitalisation - date_of_onset)
-```
-
-```{r, eval = FALSE}
-# calculate the median number of days to hospitalisation for all cases where data are available
-median(linelist_delay$days_onset_to_hosp, na.rm = T)
 ```
 
 # Date display
