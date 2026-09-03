@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ## Load packages
 
 ```{r dates_packages, warning=F, message=F}
+# no printed output: this only loads packages
 # Checks if package is installed, installs if necessary, and loads package for current session
 
 pacman::p_load(
@@ -32,6 +33,7 @@ pacman::p_load(
 ## Import data
 
 ```{r}
+# no printed output: this creates linelist, see the Environment pane
 linelist <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook/main/data/linelist_cleaned.rds", trust = TRUE)
 ```
 
@@ -59,6 +61,7 @@ linelist <- linelist %>%
 ## lubridate
 
 ```{r, }
+# no printed output: this only loads a package
 # install/load lubridate 
 pacman::p_load(lubridate)
 ```
@@ -197,6 +200,7 @@ as.numeric(time2_clean - time1_clean)   # difference in hours
 ## Extract time
 
 ```{r}
+# no printed output: this adds hour_admit and time_period to linelist, see the Environment pane
 linelist <- linelist %>%
   mutate(hour_admit = hour(strptime(time_admission, format = "%H:%M"))) %>%
   mutate(time_period = case_when(
@@ -209,6 +213,7 @@ linelist <- linelist %>%
 # Working with dates
 
 ```{r, }
+# no printed output: this creates example_date, see the Environment pane
 # create object of class Date
 example_date <- ymd("2020-03-01")
 ```
