@@ -11,6 +11,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
+
+
 # Preparation
 
 ## Load packages
@@ -25,12 +27,16 @@ pacman::p_load(
   tidyverse)    # data management + ggplot2 graphics
 ```
 
+## Import data
+
 ## Malaria count data
 
 ```{r}
 count_data <- rio::import("https://raw.githubusercontent.com/TrentonSedlacek/appliedepidata/main/inst/extdata/malaria_facility_count_data.rds", trust = TRUE) %>% 
   as_tibble()
 ```
+
+
 
 ```{r, message=FALSE, echo=F}
 # display the linelist data as a table
@@ -44,7 +50,11 @@ DT::datatable(head(count_data, 50), rownames = FALSE, options = list(pageLength 
 linelist <- rio::import("https://raw.githubusercontent.com/TrentonSedlacek/appliedepidata/main/inst/extdata/linelist_cleaned_rds.rds", trust = TRUE)
 ```
 
+
+
 # Wide-to-long
+
+
 
 ## "Wide" format
 
@@ -56,6 +66,8 @@ DT::datatable(count_data, rownames = FALSE, options = list(pageLength = 5, scrol
 ggplot(count_data) +
   geom_col(aes(x = data_date, y = malaria_tot), width = 1)
 ```
+
+## `pivot_longer()`
 
 ## Standard pivoting
 
@@ -134,6 +146,7 @@ count_data %>%
 ## Pivoting data of multiple classes
 
 ```{r, message=FALSE}
+
 df <- 
   tibble::tribble(
      ~id,   ~obs1_date, ~obs1_status,   ~obs2_date, ~obs2_status,   ~obs3_date, ~obs3_status,
@@ -143,6 +156,7 @@ df <-
      ) 
 
 DT::datatable(df, rownames = FALSE)
+
 ```
 
 ```{r}
@@ -151,9 +165,11 @@ df %>%
     cols = -id,
     names_to = c("observation")
   )
+
 ```
 
 ```{r}
+
 df_long <- 
   df %>% 
   pivot_longer(
@@ -163,9 +179,11 @@ df_long <-
   )
 
 df_long
+
 ```
 
 ```{r}
+
 df_long <- 
   df_long %>% 
   mutate(
@@ -177,6 +195,7 @@ df_long <-
   )
 
 df_long
+
 ```
 
 ```{r}
@@ -188,9 +207,12 @@ ggplot(data = df_long, mapping = aes(x = date, y = id, fill = status)) +
         "Unwell" = "red", 
         "Missing" = "orange")
   )
+
 ```
 
 # Long-to-wide
+
+
 
 ## Data
 
@@ -272,6 +294,7 @@ df_combined <-
   arrange(Measurement, Facility)
 
 df_combined
+
 ```
 
 ## `fill()`
