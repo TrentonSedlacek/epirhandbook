@@ -1,0 +1,329 @@
+---
+title: "Chapter 12 - Pivoting Data"
+output:
+  html_document:
+    toc: yes
+    df_print: kable
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Preparation
+
+## Load packages
+
+```{r}
+pacman::p_load(
+  rio,          # File import
+  here,         # File locator
+  kableExtra,   # Build and manipulate complex tables
+  DT,
+  janitor,
+  tidyverse)    # data management + ggplot2 graphics
+```
+
+## Malaria count data
+
+```{r}
+count_data <- rio::import("https://raw.githubusercontent.com/TrentonSedlacek/appliedepidata/main/inst/extdata/malaria_facility_count_data.rds", trust = TRUE) %>% 
+  as_tibble()
+```
+
+```{r, message=FALSE, echo=F}
+# display the linelist data as a table
+DT::datatable(head(count_data, 50), rownames = FALSE, options = list(pageLength = 5, scrollX=T), class = 'white-space: nowrap' )
+```
+
+## Linelist case data
+
+```{r}
+# import the linelist into R
+linelist <- rio::import("https://raw.githubusercontent.com/TrentonSedlacek/appliedepidata/main/inst/extdata/linelist_cleaned_rds.rds", trust = TRUE)
+```
+
+# Wide-to-long
+
+## "Wide" format
+
+```{r, echo=F}
+DT::datatable(count_data, rownames = FALSE, options = list(pageLength = 5, scrollX=T) )
+```
+
+```{r, warning=F, message=F}
+ggplot(count_data) +
+  geom_col(aes(x = data_date, y = malaria_tot), width = 1)
+```
+
+## Standard pivoting
+
+```{r}
+df_long <- count_data %>% 
+  pivot_longer(
+    cols = c(`malaria_rdt_0-4`, `malaria_rdt_5-14`, `malaria_rdt_15`, `malaria_tot`)
+  )
+
+df_long
+```
+
+```{r}
+# provide column with a tidyselect helper function
+count_data %>% 
+  pivot_longer(
+    cols = starts_with("malaria_")
+  )
+```
+
+```{r}
+# provide columns by position
+count_data %>% 
+  pivot_longer(
+    cols = 6:9
+  )
+```
+
+```{r}
+# provide range of consecutive columns
+count_data %>% 
+  pivot_longer(
+    cols = `malaria_rdt_0-4`:malaria_tot
+  )
+```
+
+```{r}
+df_long <- 
+  count_data %>% 
+  pivot_longer(
+    cols = starts_with("malaria_"),
+    names_to = "age_group",
+    values_to = "counts"
+  )
+
+df_long
+```
+
+```{r, warning=F, message=F}
+ggplot(data = df_long) +
+  geom_col(
+    mapping = aes(x = data_date, y = counts, fill = age_group),
+    width = 1
+  )
+```
+
+```{r, warning=F, message=F}
+df_long %>% 
+  filter(age_group != "malaria_tot") %>% 
+  ggplot() +
+  geom_col(
+    aes(x = data_date, y = counts, fill = age_group),
+    width = 1
+  )
+```
+
+```{r, warning=F, message=F}
+count_data %>% 
+  pivot_longer(
+    cols = `malaria_rdt_0-4`:malaria_rdt_15,   # does not include the totals column
+    names_to = "age_group",
+    values_to = "counts"
+  )
+```
+
+## Pivoting data of multiple classes
+
+```{r, message=FALSE}
+df <- 
+  tibble::tribble(
+     ~id,   ~obs1_date, ~obs1_status,   ~obs2_date, ~obs2_status,   ~obs3_date, ~obs3_status,
+     "A", "2021-04-23",    "Healthy", "2021-04-24",    "Healthy", "2021-04-25",     "Unwell",
+     "B", "2021-04-23",    "Healthy", "2021-04-24",    "Healthy", "2021-04-25",    "Healthy",
+     "C", "2021-04-23",    "Missing", "2021-04-24",    "Healthy", "2021-04-25",    "Healthy"
+     ) 
+
+DT::datatable(df, rownames = FALSE)
+```
+
+```{r}
+df %>% 
+  pivot_longer(
+    cols = -id,
+    names_to = c("observation")
+  )
+```
+
+```{r}
+df_long <- 
+  df %>% 
+  pivot_longer(
+    cols = -id,
+    names_to = c("observation", ".value"),
+    names_sep = "_"
+  )
+
+df_long
+```
+
+```{r}
+df_long <- 
+  df_long %>% 
+  mutate(
+    date = date %>% lubridate::as_date(),
+    observation = 
+      observation %>% 
+      str_remove_all("obs") %>% 
+      as.numeric()
+  )
+
+df_long
+```
+
+```{r}
+ggplot(data = df_long, mapping = aes(x = date, y = id, fill = status)) +
+  geom_tile(colour = "black") +
+  scale_fill_manual(
+    values = 
+      c("Healthy" = "lightgreen", 
+        "Unwell" = "red", 
+        "Missing" = "orange")
+  )
+```
+
+# Long-to-wide
+
+## Data
+
+```{r, message=FALSE, echo=F}
+# display the linelist data as a table
+DT::datatable(head(linelist, 50), rownames = FALSE, options = list(pageLength = 5, scrollX=T), class = 'white-space: nowrap' )
+```
+
+```{r}
+df_wide <- 
+  linelist %>% 
+  count(age_cat, gender)
+
+df_wide
+```
+
+```{r}
+ggplot(df_wide) +
+  geom_col(aes(x = age_cat, y = n, fill = gender))
+```
+
+## Pivot wider
+
+```{r}
+table_wide <- 
+  df_wide %>% 
+  pivot_wider(
+    id_cols = age_cat,
+    names_from = gender,
+    values_from = n
+  )
+
+table_wide
+```
+
+```{r}
+table_wide %>% 
+  janitor::adorn_totals(c("row", "col")) %>% # adds row and column totals
+  knitr::kable() %>% 
+  kableExtra::row_spec(row = 10, bold = TRUE) %>% 
+  kableExtra::column_spec(column = 5, bold = TRUE) 
+```
+
+# Fill
+
+## Data
+
+```{r}
+df1 <- 
+  tibble::tribble(
+       ~Measurement, ~Facility, ~Cases,
+                  1,  "Hosp 1",     66,
+                  2,  "Hosp 1",     26,
+                  3,  "Hosp 1",      8,
+                  1,  "Hosp 2",     71,
+                  2,  "Hosp 2",     62,
+                  3,  "Hosp 2",     70,
+                  1,  "Hosp 3",     47,
+                  2,  "Hosp 3",     70,
+                  3,  "Hosp 3",     38,
+       )
+
+df1 
+
+df2 <- 
+  tibble::tribble(
+    ~Year, ~Measurement, ~Facility, ~Cases,
+     2000,            1,  "Hosp 4",     82,
+     2001,            2,  "Hosp 4",     87,
+     2002,            3,  "Hosp 4",     46
+  )
+
+df2
+```
+
+```{r}
+df_combined <- 
+  bind_rows(df1, df2) %>% 
+  arrange(Measurement, Facility)
+
+df_combined
+```
+
+## `fill()`
+
+```{r}
+df_combined %>% 
+  fill(Year, .direction = "up")
+```
+
+```{r}
+df_combined <- 
+  df_combined %>% 
+  arrange(Measurement, desc(Facility))
+
+df_combined
+
+df_combined <- 
+  df_combined %>% 
+  fill(Year, .direction = "down")
+
+df_combined
+```
+
+```{r}
+ggplot(df_combined) +
+  aes(Year, Cases, fill = Facility) +
+  geom_col()
+```
+
+```{r}
+df_combined %>% 
+  pivot_wider(
+    id_cols = c(Measurement, Facility),
+    names_from = "Year",
+    values_from = "Cases"
+  ) %>% 
+  arrange(Facility) %>% 
+  janitor::adorn_totals(c("row", "col")) %>% 
+  knitr::kable() %>% 
+  kableExtra::row_spec(row = 5, bold = TRUE) %>% 
+  kableExtra::column_spec(column = 5, bold = TRUE) 
+```
+
+```{r}
+df_combined %>% 
+  pivot_wider(
+    names_from = "Year",
+    values_from = "Cases"
+  ) %>% 
+  knitr::kable()
+```
+
+# Resources
+
+Here is a helpful [tutorial](https://datacarpentry.org/r-socialsci/03-dplyr-tidyr/index.html)
