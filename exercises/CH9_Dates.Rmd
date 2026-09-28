@@ -32,7 +32,7 @@ pacman::p_load(
 ## Import data
 
 ```{r}
-linelist <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook/main/data/linelist_cleaned.rds", trust = TRUE)
+linelist <- import("https://raw.githubusercontent.com/TrentonSedlacek/appliedepidata/main/inst/extdata/linelist_cleaned_rds.rds", trust = TRUE)
 ```
 
 # Current date
@@ -268,7 +268,7 @@ time_london_real - time_london_local
 # Lagging and leading calculations
 
 ```{r}
-counts <- import("https://raw.githubusercontent.com/appliedepi/epirhandbook/main/data/example/district_weekly_count_data.xlsx") %>% 
+counts <- import("https://raw.githubusercontent.com/TrentonSedlacek/appliedepidata/main/inst/extdata/district_weekly_count_data.xlsx") %>% 
   filter(District == "Nibari") %>% 
   mutate(Date = as.Date(Date),
          week_start = lubridate::floor_date(Date, "week")) %>%
