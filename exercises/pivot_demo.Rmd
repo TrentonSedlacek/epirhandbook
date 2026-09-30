@@ -11,57 +11,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-```{r}
-# Made-up data for this demo, don't reuse it thinking it's real.
-
-pacman::p_load(rio, tidyverse)
-```
-
 # Long to wide
-
-```{r}
-linelist <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
-
-head(linelist)
-```
-
-```{r}
-# one row per LHD and sex. this is long
-counts <- linelist %>%
-  count(lhd, sex)
-
-counts
-```
-
-```{r}
-# names_from is the column whose values turn into the headers
-# without values_fill = 0 the empty cells come out NA
-wide <- counts %>%
-  pivot_wider(names_from = sex, values_from = n, values_fill = 0)
-
-wide
-```
 
 # And back
 
-```{r}
-# cols = -lhd means every column except lhd
-wide %>%
-  pivot_longer(cols = -lhd, names_to = "sex", values_to = "n")
-```
-
 # Why long
 
-```{r}
-# ggplot wants fill as one column. the wide table has sex split across two
-ggplot(counts, aes(x = n, y = lhd, fill = sex)) +
-  geom_col()
-```
-
 # Same thing by age group
-
-```{r}
-linelist %>%
-  count(age_group, sex) %>%
-  pivot_wider(names_from = sex, values_from = n, values_fill = 0)
-```
