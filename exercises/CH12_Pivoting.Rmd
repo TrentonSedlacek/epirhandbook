@@ -3,7 +3,7 @@ title: "Chapter 12 - Pivoting Data"
 output:
   html_document:
     toc: yes
-    df_print: kable
+    df_print: default
     highlight: tango
 ---
 
