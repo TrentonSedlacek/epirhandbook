@@ -17,50 +17,51 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 pacman::p_load(rio, tidyverse)
 ```
 
-# Wide to long and back
+# Long to wide
 
 ```{r}
-wide <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
-
-head(wide)
-```
-
-```{r}
-# names_to and values_to are just what you want the two new columns called
-# 93 rows turn into 744, same numbers just stacked
-long <- wide %>%
-  pivot_longer(cols = wk40:wk47, names_to = "week", values_to = "cases")
-
-head(long, 12)
-```
-
-```{r}
-# and back
-long %>%
-  pivot_wider(names_from = week, values_from = cases) %>%
-  head()
-```
-
-# Why bother
-
-```{r}
-# ggplot wants x, y, and fill each as one column. the wide table has no week column
-ggplot(long, aes(x = week, y = cases, fill = region)) +
-  geom_col()
-```
-
-# Crosstab
-
-```{r}
-# which = picks the sheet. leave it off and you get the first one
-linelist <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx", which = "flu_linelist")
+linelist <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
 
 head(linelist)
 ```
 
 ```{r}
-# count then widen. without values_fill = 0 the empty cells come out NA
+# one row per LHD and sex. this is long
+counts <- linelist %>%
+  count(lhd, sex)
+
+counts
+```
+
+```{r}
+# names_from is the column whose values turn into the headers
+# without values_fill = 0 the empty cells come out NA
+wide <- counts %>%
+  pivot_wider(names_from = sex, values_from = n, values_fill = 0)
+
+wide
+```
+
+# And back
+
+```{r}
+# cols = -lhd means every column except lhd
+wide %>%
+  pivot_longer(cols = -lhd, names_to = "sex", values_to = "n")
+```
+
+# Why long
+
+```{r}
+# ggplot wants fill as one column. the wide table has sex split across two
+ggplot(counts, aes(x = n, y = lhd, fill = sex)) +
+  geom_col()
+```
+
+# Same thing by age group
+
+```{r}
 linelist %>%
-  count(county, sex) %>%
+  count(age_group, sex) %>%
   pivot_wider(names_from = sex, values_from = n, values_fill = 0)
 ```
