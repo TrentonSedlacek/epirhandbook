@@ -2,10 +2,10 @@
 
 /* First sheet: one row per county, one column per week. That is wide. */
 proc import datafile="K:/R Study Group/Trenton/pivot_demo_data.xlsx" out=wide dbms=xlsx replace;
-    sheet="weekly_wide";
+    sheet="flu_weekly";
 run;
 
-proc print data=wide;
+proc print data=wide (obs=10);
 run;
 
 /* PROC TRANSPOSE is pivot_longer. BY needs the data sorted first. */
@@ -15,16 +15,17 @@ run;
 
 proc transpose data=wide out=long(rename=(col1=cases)) name=week;
     by county region;
-    var wk31-wk36;
+    var wk40-wk47;
 run;
 
 proc print data=long (obs=12);
 run;
 
-/* Same numbers. 8 rows became 48. */
+/* Same numbers. 93 rows became 744. */
 
 /* One series per county, straight from the long table */
 proc sgplot data=long;
+    where region="Large";
     series x=week y=cases / group=county;
 run;
 
@@ -35,7 +36,7 @@ proc transpose data=long out=wide_again(drop=_name_);
     var cases;
 run;
 
-proc print data=wide_again;
+proc print data=wide_again (obs=10);
 run;
 
 /* CLASS is group_by. Region totals by week, then widen for the report. */
@@ -54,9 +55,9 @@ run;
 proc print data=region_wide;
 run;
 
-/* Second sheet: a line list, one row per case */
+/* Second sheet: a flu line list, one row per case */
 proc import datafile="K:/R Study Group/Trenton/pivot_demo_data.xlsx" out=linelist dbms=xlsx replace;
-    sheet="linelist";
+    sheet="flu_linelist";
 run;
 
 /* The everyday one. PROC FREQ gives the crosstab in one step. In R it is count then pivot_wider. */
@@ -66,7 +67,7 @@ run;
 
 /* Third sheet: an Excel export where the county is only written on the first row of each block */
 proc import datafile="K:/R Study Group/Trenton/pivot_demo_data.xlsx" out=export dbms=xlsx replace;
-    sheet="export";
+    sheet="flu_export";
 run;
 
 proc print data=export;
