@@ -1,5 +1,5 @@
 ---
-title: "Pivoting demo"
+title: "Ch12 pivot demo"
 output:
   html_document:
     toc: yes
@@ -11,27 +11,22 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-Made-up data for this demo, don't reuse it thinking it's real.
-
-# Packages
-
 ```{r}
+# Made-up data for this demo, don't reuse it thinking it's real.
+
 pacman::p_load(rio, tidyverse, janitor)
 ```
 
-# Wide
+# Wide to long
 
 ```{r}
-# First sheet: one row per county, one column per week. That is wide.
 wide <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
 
 head(wide, 10)
 ```
 
-# pivot_longer
-
 ```{r}
-# pivot_longer is PROC TRANSPOSE. The eight week columns become two: which week, how many cases
+# names_to and values_to are just what you want the two new columns called
 long <- wide %>%
   pivot_longer(cols = wk40:wk47, names_to = "week", values_to = "cases")
 
@@ -39,73 +34,64 @@ head(long, 12)
 ```
 
 ```{r}
-# Same numbers. 93 rows became 744.
 nrow(wide)
-nrow(long)
+nrow(long) # same numbers, just stacked
 ```
 
 # Why long
 
 ```{r}
-# ggplot wants one column for x, one for y, one to color by.
+# this is why you go long. ggplot wants x, y, and color each as its own column
+# just the big counties, 93 lines is a mess
 long %>%
   filter(region == "Large") %>%
   ggplot(aes(x = week, y = cases, color = county, group = county)) +
   geom_line()
 ```
 
-# pivot_wider
+# Back to wide
 
 ```{r}
-# pivot_wider goes back. Same as TRANSPOSE with an ID statement.
 long %>%
   pivot_wider(names_from = week, values_from = cases) %>%
   head()
 ```
 
-```{r}
-# group_by is CLASS. Summarise on the long table, then widen it for the report.
-long %>%
-  group_by(region, week) %>%
-  summarise(cases = sum(cases)) %>%
-  pivot_wider(names_from = week, values_from = cases) %>%
-  adorn_totals(c("row", "col"))
-```
-
-# Line list to crosstab
+# Crosstab
 
 ```{r}
-# Second sheet: a flu line list, one row per case
+# which = picks the sheet. leave it off and you get the first one
 linelist <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx", which = "flu_linelist")
 
 head(linelist)
 ```
 
 ```{r}
-# The everyday one: count, then widen. PROC FREQ does this in one step.
+# count then widen, that's your crosstab
 linelist %>%
   count(county, sex) %>%
   pivot_wider(names_from = sex, values_from = n)
 ```
 
 ```{r}
-# A county with no cases of one sex shows NA. values_fill makes it a 0.
+# NA just means no rows to count. values_fill = 0 turns it into an actual zero
 linelist %>%
   count(county, sex) %>%
-  pivot_wider(names_from = sex, values_from = n, values_fill = 0)
+  pivot_wider(names_from = sex, values_from = n, values_fill = 0) %>%
+  adorn_totals(c("row", "col"))
 ```
 
-# fill
+# Filling blanks
 
 ```{r}
-# Third sheet: an Excel export where the county is only written on the first row of each block
+# Excel exports do this, county only on the first row of each block
 export <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx", which = "flu_export")
 
 export
 ```
 
 ```{r}
-# fill is RETAIN
+# fill() copies the last value down until it hits the next one
 export %>%
   fill(county)
 ```
