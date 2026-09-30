@@ -1,7 +1,7 @@
 /* Made-up data for this demo, don't reuse it thinking it's real. */
 
 /* First sheet: one row per county, one column per week. That is wide. */
-proc import datafile="K:/R Study Group/Trenton/pivot_demo_data.xlsx" out=wide dbms=xlsx replace;
+proc import datafile="K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx" out=wide dbms=xlsx replace;
     sheet="flu_weekly";
 run;
 
@@ -56,7 +56,7 @@ proc print data=region_wide;
 run;
 
 /* Second sheet: a flu line list, one row per case */
-proc import datafile="K:/R Study Group/Trenton/pivot_demo_data.xlsx" out=linelist dbms=xlsx replace;
+proc import datafile="K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx" out=linelist dbms=xlsx replace;
     sheet="flu_linelist";
 run;
 
@@ -66,7 +66,7 @@ proc freq data=linelist;
 run;
 
 /* Third sheet: an Excel export where the county is only written on the first row of each block */
-proc import datafile="K:/R Study Group/Trenton/pivot_demo_data.xlsx" out=export dbms=xlsx replace;
+proc import datafile="K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx" out=export dbms=xlsx replace;
     sheet="flu_export";
 run;
 

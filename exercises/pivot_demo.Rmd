@@ -23,7 +23,7 @@ pacman::p_load(rio, tidyverse, janitor)
 
 ```{r}
 # First sheet: one row per county, one column per week. That is wide.
-wide <- rio::import("K:/R Study Group/Trenton/pivot_demo_data.xlsx")
+wide <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
 
 head(wide, 10)
 ```
@@ -76,7 +76,7 @@ long %>%
 
 ```{r}
 # Second sheet: a flu line list, one row per case
-linelist <- rio::import("K:/R Study Group/Trenton/pivot_demo_data.xlsx", which = "flu_linelist")
+linelist <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx", which = "flu_linelist")
 
 head(linelist)
 ```
@@ -99,7 +99,7 @@ linelist %>%
 
 ```{r}
 # Third sheet: an Excel export where the county is only written on the first row of each block
-export <- rio::import("K:/R Study Group/Trenton/pivot_demo_data.xlsx", which = "flu_export")
+export <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx", which = "flu_export")
 
 export
 ```
