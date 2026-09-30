@@ -22,6 +22,7 @@ pacman::p_load(rio, tidyverse)
 ```{r}
 # Data is read from the R Study Group folder.
 # If your EDV drive letter is different than K: you will need to change it.
+# NOTE: which = picks the sheet when a workbook has more than one tab. Leave it off and you get the first one.
 linelist <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
 
 head(linelist)
@@ -29,7 +30,7 @@ head(linelist)
 
 ```{r}
 # Counting up cases one row per LHD and sex.
-# This is "long" data.
+# This is long data.
 counts <- linelist %>%
   count(lhd, sex)
 
@@ -45,7 +46,7 @@ wide <- counts %>%
 wide
 ```
 
-# And back
+# And pivot back to long
 
 ```{r}
 # cols = -lhd means every column except lhd
@@ -56,20 +57,25 @@ wide %>%
   pivot_longer(cols = -lhd, names_to = "sex", values_to = "n")
 ```
 
-# Why long
+# Why long vs wide? Mostly graphing and Power BI
 
 ```{r}
 # Plotting package ggplot wants fill= as one column/variable. 
 # The wide table has sex split across two.
+# You can't do this graph easily in wide but you can with long
+# Power BI relies on filters which work with long data.
+
 ggplot(counts, aes(x = n, y = lhd, fill = sex)) +
   geom_col()
 ```
 
-# Same thing by age group
+# Pivoting now by age group
 
 ```{r}
 # Now counting cases by age group too.
-# Count then widen. Without values_fill = 0 the empty cells come out NA.
+# Count cases then pivot to wide. 
+# FYI without values_fill = 0 the empty cells come out NA.
+
 linelist %>%
   count(age_group, sex) %>%
   pivot_wider(names_from = sex, values_from = n, values_fill = 0)
