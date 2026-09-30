@@ -11,10 +11,66 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
+```{r}
+# Once again, made-up Nebraska data for this demo. So don't reuse it thinking it's real.
+# These are the packages for importing/exporting (rio) and general data work (tidyverse)
+pacman::p_load(rio, tidyverse)
+```
+
 # Long to wide
+
+```{r}
+# Data is read from the R Study Group folder.
+# If your EDV drive letter is different than K: you will need to change it.
+linelist <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
+
+head(linelist)
+```
+
+```{r}
+# Counting up cases one row per LHD and sex.
+# This is "long" data.
+counts <- linelist %>%
+  count(lhd, sex)
+
+counts
+```
+
+```{r}
+# names_from is the column/variable whose values we want to turn into the headers
+# FYI without values_fill = 0 the empty cells come out NA.
+wide <- counts %>%
+  pivot_wider(names_from = sex, values_from = n, values_fill = 0)
+
+wide
+```
 
 # And back
 
+```{r}
+# cols = -lhd means every column except lhd
+# I like to use "-" in some of my work.
+# names_to and values_to are just what you want the two new columns called.
+# NOTE: 8 rows turn into 16, same numbers just stacked.
+wide %>%
+  pivot_longer(cols = -lhd, names_to = "sex", values_to = "n")
+```
+
 # Why long
 
+```{r}
+# Plotting package ggplot wants fill= as one column/variable. 
+# The wide table has sex split across two.
+ggplot(counts, aes(x = n, y = lhd, fill = sex)) +
+  geom_col()
+```
+
 # Same thing by age group
+
+```{r}
+# Now counting cases by age group too.
+# Count then widen. Without values_fill = 0 the empty cells come out NA.
+linelist %>%
+  count(age_group, sex) %>%
+  pivot_wider(names_from = sex, values_from = n, values_fill = 0)
+```
