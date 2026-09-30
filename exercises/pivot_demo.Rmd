@@ -14,19 +14,20 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```{r}
 # Made-up data for this demo, don't reuse it thinking it's real.
 
-pacman::p_load(rio, tidyverse, janitor)
+pacman::p_load(rio, tidyverse)
 ```
 
-# Wide to long
+# Wide to long and back
 
 ```{r}
-wide <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
+wide <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
 
-head(wide, 10)
+head(wide)
 ```
 
 ```{r}
 # names_to and values_to are just what you want the two new columns called
+# 93 rows turn into 744, same numbers just stacked
 long <- wide %>%
   pivot_longer(cols = wk40:wk47, names_to = "week", values_to = "cases")
 
@@ -34,64 +35,32 @@ head(long, 12)
 ```
 
 ```{r}
-nrow(wide)
-nrow(long) # same numbers, just stacked
-```
-
-# Why long
-
-```{r}
-# this is why you go long. ggplot wants x, y, and color each as its own column
-# just the big counties, 93 lines is a mess
-long %>%
-  filter(region == "Large") %>%
-  ggplot(aes(x = week, y = cases, color = county, group = county)) +
-  geom_line()
-```
-
-# Back to wide
-
-```{r}
+# and back
 long %>%
   pivot_wider(names_from = week, values_from = cases) %>%
   head()
+```
+
+# Why bother
+
+```{r}
+# ggplot wants x, y, and fill each as one column. the wide table has no week column
+ggplot(long, aes(x = week, y = cases, fill = region)) +
+  geom_col()
 ```
 
 # Crosstab
 
 ```{r}
 # which = picks the sheet. leave it off and you get the first one
-linelist <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx", which = "flu_linelist")
+linelist <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx", which = "flu_linelist")
 
 head(linelist)
 ```
 
 ```{r}
-# count then widen, that's your crosstab
+# count then widen. without values_fill = 0 the empty cells come out NA
 linelist %>%
   count(county, sex) %>%
-  pivot_wider(names_from = sex, values_from = n)
-```
-
-```{r}
-# NA just means no rows to count. values_fill = 0 turns it into an actual zero
-linelist %>%
-  count(county, sex) %>%
-  pivot_wider(names_from = sex, values_from = n, values_fill = 0) %>%
-  adorn_totals(c("row", "col"))
-```
-
-# Filling blanks
-
-```{r}
-# Excel exports do this, county only on the first row of each block
-export <- rio::import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx", which = "flu_export")
-
-export
-```
-
-```{r}
-# fill() copies the last value down until it hits the next one
-export %>%
-  fill(county)
+  pivot_wider(names_from = sex, values_from = n, values_fill = 0)
 ```
