@@ -1,0 +1,157 @@
+---
+title: "Ch12 pivot demo, live examples"
+output:
+  html_document:
+    toc: yes
+    df_print: kable
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r}
+# Made-up data for this demo, don't reuse it thinking it's real.
+# Picks up where the demo file ends. Same data, one change per step.
+
+pacman::p_load(rio, tidyverse)
+
+linelist <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
+```
+
+# Same code, county instead of LHD
+
+```{r}
+# Only the first argument of count() changed. 13 rows instead of 8.
+linelist %>%
+  count(county, sex) %>%
+  pivot_wider(names_from = sex, values_from = n, values_fill = 0)
+```
+
+# Flip which column makes the headers
+
+```{r}
+# names_from = lhd this time. 2 rows and 8 columns, and it already wraps the screen.
+linelist %>%
+  count(lhd, sex) %>%
+  pivot_wider(names_from = lhd, values_from = n, values_fill = 0)
+```
+
+# Age group by LHD
+
+```{r}
+# Swap sex for age_group. South Heartland has zeros in two cells.
+linelist %>%
+  count(lhd, age_group) %>%
+  pivot_wider(names_from = age_group, values_from = n, values_fill = 0)
+```
+
+# Two columns in the headers
+
+```{r}
+# names_from takes more than one column. Headers come out like Female_18-64.
+linelist %>%
+  count(lhd, sex, age_group) %>%
+  pivot_wider(names_from = c(sex, age_group), values_from = n, values_fill = 0)
+```
+
+# Split those headers back apart
+
+```{r}
+# names_sep = "_" cuts each header at the underscore into two columns.
+# 48 rows now, because the zeros became rows too.
+linelist %>%
+  count(lhd, sex, age_group) %>%
+  pivot_wider(names_from = c(sex, age_group), values_from = n, values_fill = 0) %>%
+  pivot_longer(cols = -lhd, names_to = c("sex", "age_group"), names_sep = "_", values_to = "n")
+```
+
+# id_cols decides the rows
+
+```{r}
+# id_cols says which column identifies a row. lhd is not in it, so lhd gets dropped.
+linelist %>%
+  count(lhd, county, sex) %>%
+  pivot_wider(id_cols = county, names_from = sex, values_from = n, values_fill = 0)
+```
+
+# A prefix on the headers, then back with starts_with
+
+```{r}
+# names_prefix puts text in front of every new header.
+wide <- linelist %>%
+  count(lhd, sex) %>%
+  pivot_wider(names_from = sex, values_from = n, values_fill = 0, names_prefix = "n_")
+
+wide
+```
+
+```{r}
+# cols = can be a helper instead of -lhd. Same 16 rows either way.
+wide %>%
+  pivot_longer(cols = starts_with("n_"), names_to = "sex", values_to = "n")
+```
+
+# values_from that is not a count
+
+```{r}
+# Mean age by LHD and sex, then widen. values_from = mean_age instead of n.
+# NA for South Heartland men is honest. No men, no mean. So no values_fill here.
+linelist %>%
+  group_by(lhd, sex) %>%
+  summarise(mean_age = round(mean(age))) %>%
+  pivot_wider(names_from = sex, values_from = mean_age)
+```
+
+# Two values_from at once
+
+```{r}
+# values_from = c(n, mean_age) gives four columns, one per combination.
+linelist %>%
+  group_by(lhd, sex) %>%
+  summarise(n = n(), mean_age = round(mean(age))) %>%
+  pivot_wider(names_from = sex, values_from = c(n, mean_age))
+```
+
+# Percent of each LHD by sex
+
+```{r}
+# group_by(lhd) so sum(n) is that LHD's total. id_cols drops the raw n.
+linelist %>%
+  count(lhd, sex) %>%
+  group_by(lhd) %>%
+  mutate(pct = round(100 * n / sum(n))) %>%
+  pivot_wider(id_cols = lhd, names_from = sex, values_from = pct, values_fill = 0)
+```
+
+# Plot straight from the long count
+
+```{r}
+# No pivot needed for the plot. The count table is already long.
+linelist %>%
+  count(lhd, age_group) %>%
+  ggplot(aes(x = n, y = lhd, fill = age_group)) +
+  geom_col()
+```
+
+# Totals row and column
+
+```{r}
+# adorn_totals is from janitor. The textbook uses it the same way.
+pacman::p_load(janitor)
+
+linelist %>%
+  count(lhd, sex) %>%
+  pivot_wider(names_from = sex, values_from = n, values_fill = 0) %>%
+  adorn_totals(c("row", "col"))
+```
+
+# Where age_group came from
+
+```{r}
+# Rebuilding it from age with cut() and checking it matches. 11, 29, 10.
+linelist %>%
+  mutate(age_group_check = cut(age, breaks = c(0, 17, 64, 120), labels = c("0-17", "18-64", "65+"))) %>%
+  count(age_group, age_group_check)
+```
