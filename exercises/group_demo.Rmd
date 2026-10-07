@@ -1,0 +1,88 @@
+---
+title: "Ch13 group demo"
+output:
+  html_document:
+    toc: yes
+    df_print: kable
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r}
+# Same made-up Nebraska data as last week. Still not real.
+# rio imports the data and tidyverse does the data work.
+pacman::p_load(rio, tidyverse)
+```
+
+# Read in the data
+
+```{r}
+# Data is read from the R Study Group folder.
+# If your EDV drive letter is different than K: you will need to change it.
+linelist <- import("K:/R Study Group/Trenton/Ch12 Pivot/pivot_demo_data.xlsx")
+
+head(linelist)
+```
+
+# group_by and summarise
+
+```{r}
+# group_by does nothing visible by itself. It just tells R how to split the rows.
+# summarise then boils each group down to one row.
+# n() counts the rows in the group. mean() averages a column.
+linelist %>%
+  group_by(lhd) %>%
+  summarise(cases = n(), mean_age = mean(age))
+```
+
+```{r}
+# You can group by more than one column. One row per LHD and sex.
+# NOTE: this is the long format from last week, just with more columns.
+linelist %>%
+  group_by(lhd, sex) %>%
+  summarise(cases = n(), mean_age = mean(age), max_age = max(age))
+```
+
+# count is the shortcut
+
+```{r}
+# count does the group_by and summarise(n()) in one step.
+# Same numbers as above minus the ages.
+linelist %>%
+  count(lhd, sex)
+```
+
+# Adding a column per group
+
+```{r}
+# mutate after group_by keeps every row but calculates within the group.
+# Here each case gets the mean age of its own LHD.
+linelist %>%
+  group_by(lhd) %>%
+  mutate(lhd_mean_age = mean(age)) %>%
+  head()
+```
+
+# Filtering per group
+
+```{r}
+# Oldest case in each LHD. Without group_by this would just be the oldest case overall.
+linelist %>%
+  group_by(lhd) %>%
+  filter(age == max(age))
+```
+
+# ungroup when done
+
+```{r}
+# Grouping sticks to the data until you ungroup. Easy to forget.
+# NOTE: look at the Groups line at the top of the output above vs here.
+linelist %>%
+  group_by(lhd) %>%
+  mutate(lhd_mean_age = mean(age)) %>%
+  ungroup() %>%
+  head()
+```
