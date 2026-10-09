@@ -33,24 +33,25 @@ head(linelist)
 # group_by does nothing visible by itself. It just tells R how to split the rows.
 # summarise then boils each group down to one row.
 # n() counts the rows in the group. mean() averages a column.
+# NOTE: 50 rows turn into 8, one per LHD. The counts are last week's wide table with Female + Male added together.
 linelist %>%
   group_by(lhd) %>%
-  summarise(cases = n(), mean_age = mean(age))
+  summarise(cases = n(), mean_age = round(mean(age)))
 ```
 
 ```{r}
 # You can group by more than one column. One row per LHD and sex.
-# NOTE: this is the long format from last week, just with more columns.
+# NOTE: same 15 rows as last week's count(lhd, sex), just with more columns.
 linelist %>%
   group_by(lhd, sex) %>%
-  summarise(cases = n(), mean_age = mean(age), max_age = max(age))
+  summarise(cases = n(), mean_age = round(mean(age)), max_age = max(age))
 ```
 
 # count is the shortcut
 
 ```{r}
 # count does the group_by and summarise(n()) in one step.
-# Same numbers as above minus the ages.
+# Same numbers as above minus the ages. This is what we pivoted last week.
 linelist %>%
   count(lhd, sex)
 ```
@@ -58,11 +59,11 @@ linelist %>%
 # Adding a column per group
 
 ```{r}
-# mutate after group_by keeps every row but calculates within the group.
-# Here each case gets the mean age of its own LHD.
+# summarise gives one row per group. mutate keeps every row but calculates within the group.
+# Here each case gets the mean age of its own LHD. Still 50 rows, just one column wider.
 linelist %>%
   group_by(lhd) %>%
-  mutate(lhd_mean_age = mean(age)) %>%
+  mutate(lhd_mean_age = round(mean(age))) %>%
   head()
 ```
 
@@ -70,19 +71,40 @@ linelist %>%
 
 ```{r}
 # Oldest case in each LHD. Without group_by this would just be the oldest case overall.
+# FYI an LHD shows up twice if two cases tie for oldest.
 linelist %>%
   group_by(lhd) %>%
   filter(age == max(age))
+```
+
+# Why group? Plots want one row per bar
+
+```{r}
+# ggplot needs one row per bar. group_by + summarise is how you get there.
+# Last week's plot was counts. This one is mean age.
+linelist %>%
+  group_by(lhd) %>%
+  summarise(mean_age = mean(age)) %>%
+  ggplot(aes(x = mean_age, y = lhd)) +
+  geom_col()
 ```
 
 # ungroup when done
 
 ```{r}
 # Grouping sticks to the data until you ungroup. Easy to forget.
-# NOTE: look at the Groups line at the top of the output above vs here.
+# Without ungroup, this summarise still runs per LHD. 8 rows instead of 1.
+linelist %>%
+  group_by(lhd) %>%
+  mutate(lhd_mean_age = mean(age)) %>%
+  summarise(cases = n())
+```
+
+```{r}
+# With ungroup, the same summarise gives one row for the whole data.
 linelist %>%
   group_by(lhd) %>%
   mutate(lhd_mean_age = mean(age)) %>%
   ungroup() %>%
-  head()
+  summarise(cases = n())
 ```
