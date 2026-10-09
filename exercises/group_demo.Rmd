@@ -43,7 +43,7 @@ linelist %>%
 ```{r}
 # You can group by more than one column. One row per LHD and sex.
 # NOTE: same 15 rows as last week's count(lhd, sex), just with more columns.
-# FYI summarise peels off the last grouping column (sex) but leaves lhd grouped. More on that at the end.
+# FYI summarise peels off the last grouping column (sex) but leaves lhd grouped. That is why ungroup exists, see the end.
 linelist %>%
   group_by(lhd, sex) %>%
   summarise(cases = n(), mean_age = round(mean(age)), max_age = max(age))
@@ -60,11 +60,13 @@ linelist %>%
 
 ```{r}
 # Last week's multi-strata count, written the long way.
-# group_by with three columns is what count(lhd, age_group, sex) does behind the scenes.
-# NOTE: the result is still grouped by lhd and age_group. summarise only drops sex.
+# count(lhd, age_group, sex) does this same group_by and summarise, then ungroups for you.
+# NOTE: done by hand, the result is still grouped by lhd and age_group. summarise only drops sex.
+# 32 rows in full. head(10) keeps it on one screen.
 linelist %>%
   group_by(lhd, age_group, sex) %>%
-  summarise(n = n())
+  summarise(n = n()) %>%
+  head(10)
 ```
 
 # Adding a column per group
