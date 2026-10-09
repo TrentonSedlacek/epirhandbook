@@ -42,6 +42,7 @@ linelist %>%
 ```{r}
 # You can group by more than one column. One row per LHD and sex.
 # NOTE: same 15 rows as last week's count(lhd, sex), just with more columns.
+# FYI summarise peels off the last grouping column (sex) but leaves lhd grouped. More on that at the end.
 linelist %>%
   group_by(lhd, sex) %>%
   summarise(cases = n(), mean_age = round(mean(age)), max_age = max(age))
@@ -61,6 +62,7 @@ linelist %>%
 ```{r}
 # summarise gives one row per group. mutate keeps every row but calculates within the group.
 # Here each case gets the mean age of its own LHD. Still 50 rows, just one column wider.
+# head() only prints the first 6 so the table fits on screen.
 linelist %>%
   group_by(lhd) %>%
   mutate(lhd_mean_age = round(mean(age))) %>%
@@ -71,7 +73,7 @@ linelist %>%
 
 ```{r}
 # Oldest case in each LHD. Without group_by this would just be the oldest case overall.
-# FYI an LHD shows up twice if two cases tie for oldest.
+# FYI an LHD shows up more than once if cases tie for oldest.
 linelist %>%
   group_by(lhd) %>%
   filter(age == max(age))
@@ -93,7 +95,8 @@ linelist %>%
 
 ```{r}
 # Grouping sticks to the data until you ungroup. Easy to forget.
-# Without ungroup, this summarise still runs per LHD. 8 rows instead of 1.
+# The mutate is just here to stand in for some earlier step. The grouping carries through it.
+# So this summarise still runs per LHD. 8 rows instead of 1.
 linelist %>%
   group_by(lhd) %>%
   mutate(lhd_mean_age = mean(age)) %>%
