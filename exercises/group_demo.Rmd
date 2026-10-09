@@ -58,6 +58,15 @@ linelist %>%
   count(lhd, sex)
 ```
 
+```{r}
+# Last week's multi-strata count, written the long way.
+# group_by with three columns is what count(lhd, age_group, sex) does behind the scenes.
+# NOTE: the result is still grouped by lhd and age_group. summarise only drops sex.
+linelist %>%
+  group_by(lhd, age_group, sex) %>%
+  summarise(n = n())
+```
+
 # Adding a column per group
 
 ```{r}
