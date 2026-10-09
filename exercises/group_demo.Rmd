@@ -32,6 +32,7 @@ head(linelist)
 ```{r}
 # group_by does nothing visible by itself. It just tells R how to split the rows.
 # summarise then boils each group down to one row.
+# If your patriotism is strong, you can use summarize() with a z. Both work. Just matching epirhandbook.
 # n() counts the rows in the group. mean() averages a column.
 # NOTE: 50 rows turn into 8, one per LHD. The counts are last week's wide table with Female + Male added together.
 linelist %>%
